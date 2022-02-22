@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Repositorios\EOL\" />
+    <Folder Include="Repositorios\CoreSSO\" />
+    <Folder Include="Repositorios\Serap\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SME.Integracao.Serap.Dominio\SME.Integracao.Serap.Dominio.csproj" />
+    <ProjectReference Include="..\SME.Integracao.Serap.Infra\SME.Integracao.Serap.Infra.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,6 @@
+version: '3.4'
+services:
+  sme.integracao.serap.worker:
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

@@ -1,0 +1,15 @@
+version: '3.4'
+
+services: SME.Integracao.Serap.Worker
+  sme.integracao.serap.worker:
+    image: ${DOCKER_REGISTRY-}smeintegracaoserapworker
+    build:
+      context: .
+      dockerfile: src/SME.Integracao.Serap.Worker/Dockerfile
+    networks:
+      - sme-network    
+networks:
+  sme-network:
+    external:
+      name: sme-network
+    driver: bridge
