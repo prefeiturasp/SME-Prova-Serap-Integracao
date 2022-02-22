@@ -58,24 +58,22 @@ namespace SME.Integracao.Serap.Worker
 
         private static void DeclararFilas(IModel channel)
         {
-            //foreach (var fila in typeof(RotasRabbit).ObterConstantesPublicas<string>())
-            //{
-            //    var args = new Dictionary<string, object>()
-            //        {
-            //            { "x-dead-letter-exchange", ExchangeRabbit.SerapEstudanteDeadLetter }
-            //        };
+            foreach (var fila in typeof(RotasRabbit).ObterConstantesPublicas<string>())
+            {
+                var args = new Dictionary<string, object>()
+                    {
+                        { "x-dead-letter-exchange", ExchangeRabbit.IntegracaoSerapDeadLetter }
+                    };
 
-            //    channel.QueueDeclare(fila, true, false, false, args);
-            //    channel.QueueBind(fila, ExchangeRabbit.SerapEstudante, fila, null);
+                channel.QueueDeclare(fila, true, false, false, args);
+                channel.QueueBind(fila, ExchangeRabbit.IntegracaoSerap, fila, null);
 
-            //    var filaDeadLetter = $"{fila}.deadletter";
-            //    channel.QueueDeclare(filaDeadLetter, true, false, false, null);
-            //    channel.QueueBind(filaDeadLetter, ExchangeRabbit.SerapEstudanteDeadLetter, fila, null);
-            //}
+                var filaDeadLetter = $"{fila}.deadletter";
+                channel.QueueDeclare(filaDeadLetter, true, false, false, null);
+                channel.QueueBind(filaDeadLetter, ExchangeRabbit.IntegracaoSerapDeadLetter, fila, null);
+            }
 
-            //var filaDeadLetterFinalRespostasIncluir = $"{RotasRabbit.IncluirRespostaAluno}.deadletter.final";
-            //channel.QueueDeclare(filaDeadLetterFinalRespostasIncluir, true, false, false, null);
-            //channel.QueueBind(filaDeadLetterFinalRespostasIncluir, ExchangeRabbit.SerapEstudanteDeadLetter, filaDeadLetterFinalRespostasIncluir, null);
+          
 
         }
 
