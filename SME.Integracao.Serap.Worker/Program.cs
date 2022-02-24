@@ -54,6 +54,11 @@ namespace SME.Integracao.Serap.Worker
             services.AddSingleton(channel);
             services.AddSingleton(conexaoRabbit);
 
+
+            var configuracaoRabbitOptions = new ConfiguracaoRabbitLogOptions();
+            hostContext.Configuration.GetSection(ConfiguracaoRabbitLogOptions.Secao).Bind(configuracaoRabbitOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(configuracaoRabbitOptions);
+
             var telemetriaOptions = new TelemetriaOptions();
             hostContext.Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
 

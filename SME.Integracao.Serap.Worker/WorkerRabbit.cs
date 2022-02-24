@@ -186,7 +186,7 @@ namespace SME.Integracao.Serap.Worker
         {
             var mensagem = $"ERRO WORKER INTEGRACAO - {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)} - ERRO - {ea.RoutingKey}";
 
-            // await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, logNivel, LogContexto.WorkerRabbit, observacao, rastreamento: ex?.StackTrace, excecaoInterna: ex.InnerException?.Message));
+             await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, observacao, rastreamento: ex?.StackTrace, excecaoInterna: ex.InnerException?.Message));
         }
 
     }
