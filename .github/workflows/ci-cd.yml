@@ -41,8 +41,8 @@ jobs:
         env: 
           RANCHER_URL: ${{ secrets.RANCHER_URL }}
           RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
-          WORKLOAD: sme-prova-serap-integracao
-          NAMESPACE: sme-serap-estudante
+          WORKLOAD: serap-integracao
+          NAMESPACE: sme-serap
           
   deploy-master:
   
@@ -57,6 +57,6 @@ jobs:
         env: 
           RANCHER_URL: ${{ secrets.RANCHER_URL }}
           RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
-          WORKLOAD: sme-prova-serap-integracao
-          NAMESPACE: sme-serap-estudante
+          WORKLOAD:	serap-integracao
+          NAMESPACE: sme-serap
           
