@@ -37,4 +37,4 @@ RUN apt-get update \
         libx11-dev \
      && rm -rf /var/lib/apt/lists/* 
 
-ENTRYPOINT ["dotnet", "SME.Integracao.Serap.Prova.Worker.dll"]
+ENTRYPOINT ["dotnet", "SME.Integracao.Serap.Worker.dll"]
