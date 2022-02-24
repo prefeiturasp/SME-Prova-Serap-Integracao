@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SME.SERAp.Prova.IoC;
+using SME.Integracao.Serap.IoC;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +14,7 @@ namespace SME.Integracao.Serap.IoC
         {
             services.AdicionarMediatr();
             services.AdicionarValidadoresFluentValidation();
+
         }
     }
 }

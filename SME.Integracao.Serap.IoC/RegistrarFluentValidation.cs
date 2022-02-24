@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace SME.SERAp.Prova.IoC
+namespace SME.Integracao.Serap.IoC
 {
     public static class RegistrarFluentValidation
     {
