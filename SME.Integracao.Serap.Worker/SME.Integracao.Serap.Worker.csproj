@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -10,9 +10,15 @@
     <OutputType>Exe</OutputType>
     <StartupObject />
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <UserSecretsId>6df99962-4500-4dfe-b234-a9cc5f9bd32c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
     <PackageReference Include="RabbitMQ.Client" Version="6.2.3" />
@@ -20,6 +26,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SME.Integracao.Serap.IoC\SME.Integracao.Serap.IoC.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Convex\source\repos\SME.Integracao.Serap.Worker\SME.Integracao.Serap.Worker\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Convex\source\repos\SME.Integracao.Serap.Worker\SME.Integracao.Serap.Worker\.editorconfig" />
   </ItemGroup>
 
 </Project>

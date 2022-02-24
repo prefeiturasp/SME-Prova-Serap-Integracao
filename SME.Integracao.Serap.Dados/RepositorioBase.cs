@@ -1,4 +1,4 @@
-﻿using SME.SERAp.Prova.Infra;
+﻿using SME.Integracao.Serap.Infra;
 using System;
 
 namespace SME.Integracao.Serap.Dados

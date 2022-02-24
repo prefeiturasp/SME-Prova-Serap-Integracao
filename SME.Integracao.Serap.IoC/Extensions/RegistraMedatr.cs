@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SME.Integracao.Serap.Aplicacao.Pipelines;
 using System;
 
-namespace SME.SERAp.Prova.IoC
+namespace SME.Integracao.Serap.IoC
 {
     public static class RegistraMediatr
     {
