@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using SME.Integracao.Serap.Aplicacao;
 using SME.Integracao.Serap.Infra;
-using SME.Integracao.Serap.Infra.Exceptions;
 using SME.Integracao.Serap.Infra.VariaveisDeAmbiente;
-using SME.Integracao.Serap.Infra;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -24,13 +24,21 @@ namespace SME.Integracao.Serap.Worker
         private readonly IServiceScopeFactory serviceScopeFactory;
         private readonly ConnectionFactory connectionFactory;
         private readonly Dictionary<string, ComandoRabbit> comandos;
+        private readonly IServicoTelemetria servicoTelemetria;
+        private readonly TelemetriaOptions telemetriaOptions;
+
+        private IMediator mediator;
 
         public WorkerRabbit(ILogger<WorkerRabbit> logger, RabbitOptions rabbitOptions,
-            IServiceScopeFactory serviceScopeFactory, ConnectionFactory connectionFactory)
+            IServiceScopeFactory serviceScopeFactory, ConnectionFactory connectionFactory, ServicoTelemetria servicoTelemetria)
         {
             _logger = logger;
             this.rabbitOptions = rabbitOptions ?? throw new ArgumentNullException(nameof(rabbitOptions));
             this.serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
+
+            this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
+            this.telemetriaOptions = telemetriaOptions ?? throw new ArgumentNullException(nameof(telemetriaOptions));
+
             this.connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
             comandos = new Dictionary<string, ComandoRabbit>();
         }
@@ -48,6 +56,7 @@ namespace SME.Integracao.Serap.Worker
 
             channel.ExchangeDeclare(ExchangeRabbit.IntegracaoSerap, ExchangeType.Direct, true, false);
             channel.ExchangeDeclare(ExchangeRabbit.IntegracaoSerapDeadLetter, ExchangeType.Direct, true, false);
+            channel.ExchangeDeclare(ExchangeRabbit.SerapLogs, ExchangeType.Direct, true, false);
 
             DeclararFilas(channel);
 
@@ -71,9 +80,11 @@ namespace SME.Integracao.Serap.Worker
                 var filaDeadLetter = $"{fila}.deadletter";
                 channel.QueueDeclare(filaDeadLetter, true, false, false, null);
                 channel.QueueBind(filaDeadLetter, ExchangeRabbit.IntegracaoSerapDeadLetter, fila, null);
-            }
 
-          
+                var filaLogs = $"{fila}.logs";
+                channel.QueueDeclare(filaLogs, true, false, false, null);
+                channel.QueueBind(filaLogs, ExchangeRabbit.SerapLogs, fila, null);
+            }
 
         }
 
@@ -82,7 +93,7 @@ namespace SME.Integracao.Serap.Worker
 
         }
 
-        private static MethodInfo ObterMetodo(Type objType, string method)
+        private MethodInfo ObterMetodo(Type objType, string method)
         {
             var executar = objType.GetMethod(method);
 
@@ -111,8 +122,8 @@ namespace SME.Integracao.Serap.Worker
                 }
                 catch (Exception ex)
                 {
-                    //SentrySdk.AddBreadcrumb($"Erro ao tratar mensagem {ea.DeliveryTag}", "erro", null, null, BreadcrumbLevel.Error);
-                    //SentrySdk.CaptureException(ex);
+                    await mediator.Send(new SalvarLogViaRabbitCommand($"Erro ao tratar mensagem {ea.DeliveryTag}", ex.Message));
+               
                     channel.BasicReject(ea.DeliveryTag, false);
                 }
             };
@@ -150,37 +161,33 @@ namespace SME.Integracao.Serap.Worker
                     using var scope = serviceScopeFactory.CreateScope();
                     var casoDeUso = scope.ServiceProvider.GetService(comandoRabbit.TipoCasoUso);
 
-                    await ObterMetodo(comandoRabbit.TipoCasoUso, "Executar").InvokeAsync(casoDeUso, new object[] { mensagemRabbit });
+                    var metodo = ObterMetodo(comandoRabbit.TipoCasoUso, "Executar");
+                    await servicoTelemetria.RegistrarAsync(async () =>
+                        await metodo.InvokeAsync(casoDeUso, new object[] { mensagemRabbit }),
+                                                "RabbitMQ",
+                                                "TratarMensagem",
+                                                rota);
 
                     channel.BasicAck(ea.DeliveryTag, false);
-                }
-                catch (NegocioException nex)
-                {
-                    channel.BasicAck(ea.DeliveryTag, false);
-                    //SentrySdk.AddBreadcrumb($"Erros: {nex.Message}", null, null, null, BreadcrumbLevel.Error);
-                    //SentrySdk.CaptureMessage($"Worker Serap: Rota -> {ea.RoutingKey}  Cod Correl -> {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)}", SentryLevel.Error);
-                    //SentrySdk.CaptureException(nex);
-
-                }
-                catch (ValidacaoException vex)
-                {
-                    channel.BasicAck(ea.DeliveryTag, false);
-                    //SentrySdk.CaptureMessage($"Worker Serap: Rota -> {ea.RoutingKey}  Cod Correl -> {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)}", SentryLevel.Error);
-                    //SentrySdk.AddBreadcrumb($"Erros: { JsonSerializer.Serialize(vex.Mensagens())}", null, null, null, BreadcrumbLevel.Error);
-                    //SentrySdk.CaptureException(vex);
-
-
                 }
                 catch (Exception ex)
                 {
                     channel.BasicReject(ea.DeliveryTag, false);
-                    //SentrySdk.AddBreadcrumb($"Erros: {ex.Message}", null, null, null, BreadcrumbLevel.Error);
-                    //SentrySdk.CaptureException(ex);
+                    await RegistrarLog(ea, mensagemRabbit, ex, $"Erros: {ex.Message}");
                 }
 
             }
             else
                 channel.BasicReject(ea.DeliveryTag, false);
         }
+
+
+        private async Task RegistrarLog(BasicDeliverEventArgs ea, MensagemRabbit mensagemRabbit, Exception ex, string observacao)
+        {
+            var mensagem = $"ERRO WORKER INTEGRACAO - {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)} - ERRO - {ea.RoutingKey}";
+
+            // await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, logNivel, LogContexto.WorkerRabbit, observacao, rastreamento: ex?.StackTrace, excecaoInterna: ex.InnerException?.Message));
+        }
+
     }
 }

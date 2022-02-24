@@ -23,16 +23,12 @@ namespace SME.Integracao.Serap.Worker
               .ConfigureServices((hostContext, services) =>
               {
                   RegistraDependencias.Registrar(services);
-
-                   services.AddHostedService<WorkerRabbit>();
-
-                  var serviceProvider = services.BuildServiceProvider();
-                  var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
+                  services.AddHostedService<WorkerRabbit>();
                   ConfigEnvoiromentVariables(hostContext, services);
 
               });
 
-        private static void ConfigEnvoiromentVariables(HostBuilderContext hostContext, IServiceCollection services, object clientTelemetry)
+        private static void ConfigEnvoiromentVariables(HostBuilderContext hostContext, IServiceCollection services)
         {
             var conexaoDadosVariaveis = new ConnectionStringOptions();
             hostContext.Configuration.GetSection("ConnectionStrings").Bind(conexaoDadosVariaveis, c => c.BindNonPublicProperties = true);
@@ -50,7 +46,7 @@ namespace SME.Integracao.Serap.Worker
                 VirtualHost = rabbitOptions.VirtualHost
             };
 
-             services.AddSingleton(factory);
+            services.AddSingleton(factory);
 
             var conexaoRabbit = factory.CreateConnection();
             IModel channel = conexaoRabbit.CreateModel();
@@ -58,16 +54,17 @@ namespace SME.Integracao.Serap.Worker
             services.AddSingleton(channel);
             services.AddSingleton(conexaoRabbit);
 
-
             var telemetriaOptions = new TelemetriaOptions();
             hostContext.Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
 
+            var serviceProvider = services.BuildServiceProvider();
+
             var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
+
             var servicoTelemetria = new ServicoTelemetria(clientTelemetry, telemetriaOptions);
 
             services.AddSingleton(telemetriaOptions);
 
-           
         }
     }
 }

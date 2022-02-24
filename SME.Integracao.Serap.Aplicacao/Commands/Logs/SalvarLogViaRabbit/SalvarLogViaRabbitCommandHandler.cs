@@ -1,15 +1,15 @@
 ﻿using MediatR;
 using Newtonsoft.Json;
+using RabbitMQ.Client;
 using SME.Integracao.Serap.Infra;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.Integracao.Serap.Aplicacao.Commands.Logs.SalvarLogViaRabbit
-{
+namespace SME.Integracao.Serap.Aplicacao
+{ 
     public class SalvarLogViaRabbitCommandHandler : IRequestHandler<SalvarLogViaRabbitCommand, bool>
     {
         private readonly ConfiguracaoRabbitLogOptions configuracaoRabbitOptions;
@@ -61,18 +61,16 @@ namespace SME.Integracao.Serap.Aplicacao.Commands.Logs.SalvarLogViaRabbit
                 {
                     var props = _channel.CreateBasicProperties();
 
-                    _channel.BasicPublish(ExchangeSgpRabbit.SgpLogs, RotasRabbitLogs.RotaLogs, props, body);
+                    _channel.BasicPublish(ExchangeRabbit.SerapLogs, RotasRabbitLogs.RotaLogs, props, body);
                 }
             }
         }
     }
     public class LogMensagem
     {
-        public LogMensagem(string mensagem, string nivel, string contexto, string observacao, string projeto, string rastreamento, string excecaoInterna)
+        public LogMensagem(string mensagem, string observacao, string projeto, string rastreamento, string excecaoInterna)
         {
             Mensagem = mensagem;
-            Nivel = nivel;
-            Contexto = contexto;
             Observacao = observacao;
             Projeto = projeto;
             Rastreamento = rastreamento;

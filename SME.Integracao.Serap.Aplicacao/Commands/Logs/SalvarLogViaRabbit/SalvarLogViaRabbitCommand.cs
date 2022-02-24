@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace SME.Integracao.Serap.Aplicacao.Commands.Logs.SalvarLogViaRabbit
+namespace SME.Integracao.Serap.Aplicacao
 {
     public class SalvarLogViaRabbitCommand : IRequest<bool>
     {
