@@ -5,12 +5,12 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["src/SME.Integracao.Serap.Worker\SME.Integracao.Serap.Worker.csproj", "src/SME.Integracao.Serap.Worker/"]
-COPY ["src/SME.Integracao.Serap.IoC/SME.Integracao.Serap.IoC.csproj", "src/SME.Integracao.Serap.IoC/"]
-COPY ["src/SME.Integracao.Serap.Dados/SME.Integracao.Serap.Dados.csproj", "src/SME.Integracao.Serap.Dados/"]
-COPY ["src/SME.Integracao.Serap.Infra/SME.Integracao.Serap.Infra.csproj", "src/SME.Integracao.Serap.Infra/"]
-COPY ["src/SME.Integracao.Serap.Dominio/SME.Integracao.Serap.Dominio.csproj", "src/SME.Integracao.Serap.Dominio/"]
-COPY ["src/SME.Integracao.Serap.Aplicacao/SME.Integracao.Serap.Aplicacao.csproj", "src/SME.Integracao.Serap.Aplicacao/"]
+COPY ["SME.Integracao.Serap.Worker\SME.Integracao.Serap.Worker.csproj", "src/SME.Integracao.Serap.Worker/"]
+COPY ["SME.Integracao.Serap.IoC/SME.Integracao.Serap.IoC.csproj", "src/SME.Integracao.Serap.IoC/"]
+COPY ["SME.Integracao.Serap.Dados/SME.Integracao.Serap.Dados.csproj", "src/SME.Integracao.Serap.Dados/"]
+COPY ["SME.Integracao.Serap.Infra/SME.Integracao.Serap.Infra.csproj", "src/SME.Integracao.Serap.Infra/"]
+COPY ["SME.Integracao.Serap.Dominio/SME.Integracao.Serap.Dominio.csproj", "src/SME.Integracao.Serap.Dominio/"]
+COPY ["SME.Integracao.Serap.Aplicacao/SME.Integracao.Serap.Aplicacao.csproj", "src/SME.Integracao.Serap.Aplicacao/"]
 
 
 RUN dotnet restore "src/SME.Integracao.Serap.Worker/SME.Integracao.Serap.Worker.csproj"
