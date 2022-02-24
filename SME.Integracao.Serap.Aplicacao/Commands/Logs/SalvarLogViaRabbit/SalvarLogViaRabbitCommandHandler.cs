@@ -36,7 +36,7 @@ namespace SME.Integracao.Serap.Aplicacao
 
                 var body = Encoding.UTF8.GetBytes(mensagem);
 
-                servicoTelemetria.Registrar(() => PublicarMensagem(body), "RabbitMQ", "Salvar Log Via Rabbit", RotasRabbitLogs.RotaLogs);
+                PublicarMensagem(body);
 
                 return Task.FromResult(true);
             }
