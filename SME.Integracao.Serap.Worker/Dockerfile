@@ -15,7 +15,7 @@ COPY ["SME.Integracao.Serap.Aplicacao/SME.Integracao.Serap.Aplicacao.csproj", "s
 
 RUN dotnet restore "src/SME.Integracao.Serap.Worker/SME.Integracao.Serap.Worker.csproj"
 COPY . .
-WORKDIR "/src/src/SME.Integracao.Serap.Worker"
+WORKDIR "/src/SME.Integracao.Serap.Worker"
 RUN dotnet build "SME.Integracao.Serap.Worker.csproj" -c Release -o /app/build
 
 FROM build AS publish
