@@ -1,4 +1,4 @@
-﻿namespace SME.SERAp.Prova.Infra
+﻿namespace SME.Integracao.Serap.Infra
 {
     public class ConnectionStringOptions
     {

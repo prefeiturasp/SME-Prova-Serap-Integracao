@@ -3,9 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SME.Integracao.Serap.IoC;
 using System.Reflection;
-using SME.SERAp.Prova.Infra;
+using SME.Integracao.Serap.Infra;
 using SME.Integracao.Serap.Infra.VariaveisDeAmbiente;
 using RabbitMQ.Client;
+using Microsoft.ApplicationInsights;
 
 namespace SME.Integracao.Serap.Worker
 {
@@ -25,11 +26,13 @@ namespace SME.Integracao.Serap.Worker
 
                    services.AddHostedService<WorkerRabbit>();
 
+                  var serviceProvider = services.BuildServiceProvider();
+                  var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
                   ConfigEnvoiromentVariables(hostContext, services);
 
               });
 
-        private static void ConfigEnvoiromentVariables(HostBuilderContext hostContext, IServiceCollection services)
+        private static void ConfigEnvoiromentVariables(HostBuilderContext hostContext, IServiceCollection services, object clientTelemetry)
         {
             var conexaoDadosVariaveis = new ConnectionStringOptions();
             hostContext.Configuration.GetSection("ConnectionStrings").Bind(conexaoDadosVariaveis, c => c.BindNonPublicProperties = true);
@@ -54,6 +57,17 @@ namespace SME.Integracao.Serap.Worker
 
             services.AddSingleton(channel);
             services.AddSingleton(conexaoRabbit);
-        }   
+
+
+            var telemetriaOptions = new TelemetriaOptions();
+            hostContext.Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
+
+            var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
+            var servicoTelemetria = new ServicoTelemetria(clientTelemetry, telemetriaOptions);
+
+            services.AddSingleton(telemetriaOptions);
+
+           
+        }
     }
 }

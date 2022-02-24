@@ -6,7 +6,7 @@ using RabbitMQ.Client.Events;
 using SME.Integracao.Serap.Infra;
 using SME.Integracao.Serap.Infra.Exceptions;
 using SME.Integracao.Serap.Infra.VariaveisDeAmbiente;
-using SME.SERAp.Prova.Infra;
+using SME.Integracao.Serap.Infra;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
