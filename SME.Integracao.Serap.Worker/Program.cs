@@ -30,6 +30,7 @@ namespace SME.Integracao.Serap.Worker
 
         private static void ConfigEnvoiromentVariables(HostBuilderContext hostContext, IServiceCollection services)
         {
+           
             var conexaoDadosVariaveis = new ConnectionStringOptions();
             hostContext.Configuration.GetSection("ConnectionStrings").Bind(conexaoDadosVariaveis, c => c.BindNonPublicProperties = true);
             services.AddSingleton(conexaoDadosVariaveis);
@@ -64,9 +65,9 @@ namespace SME.Integracao.Serap.Worker
 
             var serviceProvider = services.BuildServiceProvider();
 
-            var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
+         //   var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
 
-            var servicoTelemetria = new ServicoTelemetria(clientTelemetry, telemetriaOptions);
+            //  var servicoTelemetria = new ServicoTelemetria(clientTelemetry, telemetriaOptions);
 
             services.AddSingleton(telemetriaOptions);
 

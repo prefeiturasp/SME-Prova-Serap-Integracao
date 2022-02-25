@@ -13,12 +13,11 @@ namespace SME.Integracao.Serap.Aplicacao
     public class SalvarLogViaRabbitCommandHandler : IRequestHandler<SalvarLogViaRabbitCommand, bool>
     {
         private readonly ConfiguracaoRabbitLogOptions configuracaoRabbitOptions;
-        private readonly IServicoTelemetria servicoTelemetria;
+        
 
-        public SalvarLogViaRabbitCommandHandler(ConfiguracaoRabbitLogOptions configuracaoRabbitOptions, IServicoTelemetria servicoTelemetria)
+        public SalvarLogViaRabbitCommandHandler(ConfiguracaoRabbitLogOptions configuracaoRabbitOptions)
         {
             this.configuracaoRabbitOptions = configuracaoRabbitOptions ?? throw new System.ArgumentNullException(nameof(configuracaoRabbitOptions));
-            this.servicoTelemetria = servicoTelemetria ?? throw new System.ArgumentNullException(nameof(servicoTelemetria));
         }
         public Task<bool> Handle(SalvarLogViaRabbitCommand request, CancellationToken cancellationToken)
         {
