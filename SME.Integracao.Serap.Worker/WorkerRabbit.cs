@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using SME.Integracao.Serap.Aplicacao;
+using SME.Integracao.Serap.Aplicacao.Interfaces;
 using SME.Integracao.Serap.Infra;
 using SME.Integracao.Serap.Infra.VariaveisDeAmbiente;
 using System;
@@ -30,16 +31,17 @@ namespace SME.Integracao.Serap.Worker
         private IMediator mediator;
 
         public WorkerRabbit(ILogger<WorkerRabbit> logger, RabbitOptions rabbitOptions,
-            IServiceScopeFactory serviceScopeFactory, ConnectionFactory connectionFactory, ServicoTelemetria servicoTelemetria)
+            IServiceScopeFactory serviceScopeFactory, ConnectionFactory connectionFactory, IMediator mediator) //, ServicoTelemetria servicoTelemetria)
         {
             _logger = logger;
             this.rabbitOptions = rabbitOptions ?? throw new ArgumentNullException(nameof(rabbitOptions));
             this.serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
 
-            this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
-            this.telemetriaOptions = telemetriaOptions ?? throw new ArgumentNullException(nameof(telemetriaOptions));
+         //   this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
+           // this.telemetriaOptions = telemetriaOptions ?? throw new ArgumentNullException(nameof(telemetriaOptions));
 
             this.connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             comandos = new Dictionary<string, ComandoRabbit>();
         }
 
@@ -80,17 +82,15 @@ namespace SME.Integracao.Serap.Worker
                 var filaDeadLetter = $"{fila}.deadletter";
                 channel.QueueDeclare(filaDeadLetter, true, false, false, null);
                 channel.QueueBind(filaDeadLetter, ExchangeRabbit.IntegracaoSerapDeadLetter, fila, null);
-
-                var filaLogs = $"{fila}.logs";
-                channel.QueueDeclare(filaLogs, true, false, false, null);
-                channel.QueueBind(filaLogs, ExchangeRabbit.SerapLogs, fila, null);
+              
             }
 
         }
 
         private void RegistrarUseCases()
         {
-
+            comandos.Add(RotasRabbit.SysUnidadeAdministrativa, new ComandoRabbit("SincronizaçãoUnidades", typeof(ITestCommandUseCase)));
+        
         }
 
         private MethodInfo ObterMetodo(Type objType, string method)
