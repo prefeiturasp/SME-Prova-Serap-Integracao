@@ -3,9 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SME.Integracao.Serap.IoC;
 using System.Reflection;
-using SME.SERAp.Prova.Infra;
+using SME.Integracao.Serap.Infra;
 using SME.Integracao.Serap.Infra.VariaveisDeAmbiente;
 using RabbitMQ.Client;
+using Microsoft.ApplicationInsights;
 
 namespace SME.Integracao.Serap.Worker
 {
@@ -22,15 +23,14 @@ namespace SME.Integracao.Serap.Worker
               .ConfigureServices((hostContext, services) =>
               {
                   RegistraDependencias.Registrar(services);
-
-                   services.AddHostedService<WorkerRabbit>();
-
+                  services.AddHostedService<WorkerRabbit>();
                   ConfigEnvoiromentVariables(hostContext, services);
 
               });
 
         private static void ConfigEnvoiromentVariables(HostBuilderContext hostContext, IServiceCollection services)
         {
+           
             var conexaoDadosVariaveis = new ConnectionStringOptions();
             hostContext.Configuration.GetSection("ConnectionStrings").Bind(conexaoDadosVariaveis, c => c.BindNonPublicProperties = true);
             services.AddSingleton(conexaoDadosVariaveis);
@@ -47,13 +47,30 @@ namespace SME.Integracao.Serap.Worker
                 VirtualHost = rabbitOptions.VirtualHost
             };
 
-             services.AddSingleton(factory);
+            services.AddSingleton(factory);
 
             var conexaoRabbit = factory.CreateConnection();
             IModel channel = conexaoRabbit.CreateModel();
 
             services.AddSingleton(channel);
             services.AddSingleton(conexaoRabbit);
-        }   
+
+
+            var configuracaoRabbitOptions = new ConfiguracaoRabbitLogOptions();
+            hostContext.Configuration.GetSection(ConfiguracaoRabbitLogOptions.Secao).Bind(configuracaoRabbitOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(configuracaoRabbitOptions);
+
+            var telemetriaOptions = new TelemetriaOptions();
+            hostContext.Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
+
+            var serviceProvider = services.BuildServiceProvider();
+
+         //   var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
+
+            //  var servicoTelemetria = new ServicoTelemetria(clientTelemetry, telemetriaOptions);
+
+            services.AddSingleton(telemetriaOptions);
+
+        }
     }
 }

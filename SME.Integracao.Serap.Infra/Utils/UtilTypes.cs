@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace SME.SERAp.Prova.Infra
+namespace SME.Integracao.Serap.Infra
 {
     public static class UtilTypes
     {
