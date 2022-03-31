@@ -6,8 +6,11 @@
 
   <ItemGroup>
     <Folder Include="Repositorios\EOL\" />
-    <Folder Include="Repositorios\CoreSSO\" />
-    <Folder Include="Repositorios\Serap\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
   </ItemGroup>
 
   <ItemGroup>
