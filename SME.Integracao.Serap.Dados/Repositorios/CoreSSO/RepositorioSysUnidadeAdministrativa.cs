@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Dados
 {
-    public class RepositorioSysUnidadeAdministrativa : RepositorioCoreSSOBase
+    public class RepositorioSysUnidadeAdministrativa : RepositorioCoreSSOBase , IRepositorioSysUnidadeAdministrativa
     {
         public RepositorioSysUnidadeAdministrativa(ConnectionStringOptions connectionStringOptions) : base(connectionStringOptions)
         {
@@ -16,7 +16,7 @@ namespace SME.Integracao.Serap.Dados
         {
 
 
-            using var conn = ObterConexaoLeitura();
+            using var conn = ObterConexao();
             try
             {
                 var query = "TRUNCATE TABLE tmp_escola; ";
@@ -31,11 +31,6 @@ namespace SME.Integracao.Serap.Dados
                 conn.Close();
                 conn.Dispose();
             }
-
-        }
-
-        public async Task CriaSinonimosCoresso()
-        {
 
         }
 
@@ -58,7 +53,7 @@ namespace SME.Integracao.Serap.Dados
                                           ";
 
 
-            using var conn = ObterConexaoLeitura();
+            using var conn = ObterConexao();
             try
             {
 
@@ -78,7 +73,7 @@ namespace SME.Integracao.Serap.Dados
 
         public async Task CriaTipoUnidadeAdministrativas()
         {
-            using var conn = ObterConexaoLeitura();
+            using var conn = ObterConexao();
             try
             {
                 var query =
@@ -122,7 +117,7 @@ namespace SME.Integracao.Serap.Dados
         {
             try
             {
-                using var conn = ObterConexaoLeitura();
+                using var conn = ObterConexao();
 
                 var queryCarregaDadosView =
               @"SELECT
@@ -405,7 +400,7 @@ namespace SME.Integracao.Serap.Dados
 
         public async Task LimparTabelasTemporarias()
         {
-            using var conn = ObterConexaoLeitura();
+            using var conn = ObterConexao();
             try
             {
                 var query =
@@ -424,46 +419,62 @@ namespace SME.Integracao.Serap.Dados
             }
         }
 
-        public async Task ImportarDres()
+        public async Task AtualizaSysUnidadeAdministativa()
         {
-            using var conn = ObterConexaoLeitura();
+            using var conn = ObterConexao();
             {
-                
+
                 try
                 {
-                    var query = @"MERGE INTO CoreSSO..sys_unidadeadministrativa _target
-                            USING (SELECT une.cd_unidade_educacao, une.dc_tipo_unidade_educacao, une.nm_unidade_educacao,
-                                          une.nm_logradouro, une.cd_nr_endereco, une.nm_bairro, une.cd_endereco_grh
-                                     FROM BD_PRODAM..v_unidade_educacao_dados_gerais UNE
-                                    WHERE tp_situacao_unidade = 1
-                                      AND nm_unidade_educacao LIKE 'DIRETORIA REGIONAL DE EDUCACAO %') AS _source
-                             ON _target.ent_id = @ent_id
-                            AND _target.tua_id = @tua_id
-                            AND _target.uad_codigo COLLATE Latin1_General_CI_AS = _source.cd_unidade_educacao COLLATE Latin1_General_CI_AS
-                            WHEN MATCHED THEN
-                                 UPDATE SET uad_nome = _source.nm_unidade_educacao,
-                                            uad_codigoIntegracao = _source.cd_endereco_grh,
-                                            uad_dataAlteracao = GETDATE()
-                            WHEN NOT MATCHED THEN
-                                 INSERT (ent_id, tua_id, uad_codigo, uad_nome, uad_sigla, uad_idSuperior, uad_situacao,
-                                         uad_dataCriacao, uad_dataAlteracao, uad_integridade, uad_codigoIntegracao)
-                                 VALUES (@ent_id, @tua_id, _source.cd_unidade_educacao, _source.nm_unidade_educacao, NULL, NULL, 1,
-                                         GETDATE(), GETDATE(), 0, _source.cd_endereco_grh);
-                            
-                            -- Atualiza o campo uad_codigoIntegracao com o valor em BD_PRODAM..v_unidade_educacao_dados_gerais.cd_endereco_grh
-                            -- para todos os registros na SYS_UnidadeAdministrativa que tiverem relação com um registro ativo no EOL
-                            -- e que não estejam preenchidos
-                            update uad
-                               set uad_codigoIntegracao = dados.cd_endereco_grh
-                              FROM CoreSSO..SYS_UnidadeAdministrativa uad
-                                   INNER JOIN
-                                   (SELECT * FROM BD_PRODAM..v_unidade_educacao_dados_gerais
-                                     WHERE tp_situacao_unidade = 1
-                                       AND cd_endereco_grh IS NOT NULL) dados
-                                   ON uad.uad_codigo = dados.cd_unidade_educacao
-                             WHERE tua_id <> '1D208ECE-D576-E211-B1FD-782BCB3D2D76' -- Biblioteca
-                               and ISNULL(uad_codigoIntegracao,'') <> dados.cd_endereco_grh
-                            END";
+                    var query = @" DECLARE @ent_id UNIQUEIDENTIFIER, @tua_id_escola UNIQUEIDENTIFIER, @tua_id_setor UNIQUEIDENTIFIER,
+                                           @tua_id_biblioteca UNIQUEIDENTIFIER
+                                      
+                                      SET @ent_id = (SELECT ent_id FROM CoreSSO..SYS_Entidade WHERE LOWER(ent_sigla) = 'smesp')
+                                      SET @tua_id_escola = (SELECT tua_id FROM CoreSSO..SYS_TipoUnidadeAdministrativa WHERE LOWER(tua_nome) = 'escola')
+                                      SET @tua_id_setor = (SELECT tua_id FROM CoreSSO..SYS_TipoUnidadeAdministrativa WHERE LOWER(tua_nome) = 'setor')
+                                      SET @tua_id_biblioteca = (SELECT tua_id FROM CoreSSO..SYS_TipoUnidadeAdministrativa WHERE LOWER(tua_nome) = 'Biblioteca')
+                                      
+                                      MERGE CoreSSO..SYS_UnidadeAdministrativa _target
+                                      USING (SELECT cd_unidade_educacao AS uad_codigo, dc_tipo_unidade_educacao, nm_unidade_educacao AS uad_nome,
+                                                    nm_logradouro, cd_nr_endereco, nm_bairro, cd_setor_distrito, nm_micro_regiao AS nm_setor,
+                                                    LEFT(cd_setor_distrito, 2) as cd_distrito, nm_distrito_mec AS nm_distrito,
+                                                    setor.uad_id AS uad_idSuperior, cd_unidade_administrativa_referencia as cd_dre,
+                                                    CASE sg_tipo_situacao_unidade WHEN 'ATIVA' THEN 1 ELSE 3 END AS uad_situacao,
+                                                    @tua_id_escola AS tua_id_escola, @ent_id AS ent_id, cd_endereco_grh
+                                                FROM [10.49.16.23\SME_PRD].[Manutencao].[dbo].[tmp_CoreSME_unidade_educacao_dados_gerais] ueg WITH(READUNCOMMITTED)
+                                                    INNER JOIN
+                                                    (SELECT uad_id, uad_codigo, uad_nome,
+                                                            ROW_NUMBER() OVER (PARTITION BY uad_codigo ORDER BY uad_dataCriacao) AS rowNum
+                                                       FROM CoreSSO..SYS_UnidadeAdministrativa WITH(READUNCOMMITTED)
+                                                      WHERE tua_id = @tua_id_setor) AS setor
+                                                     ON RTRIM(LTRIM(setor.uad_codigo)) = ueg.cd_setor_distrito
+                                                    AND setor.rowNum = 1
+                                              WHERE ((dc_tipo_unidade_educacao = 'ESCOLA')
+                                                     -- filtro para pegar os CEUs Puros
+                                                     or(cd_unidade_educacao like '200%'
+                                                         and dc_tipo_unidade_educacao = 'UNIDADE ADMINISTRATIVA'))
+                                              GROUP BY cd_unidade_educacao, dc_tipo_unidade_educacao, nm_unidade_educacao, nm_logradouro,
+                                                       cd_nr_endereco, nm_bairro, cd_setor_distrito, nm_micro_regiao, nm_distrito_mec,
+                                                       setor.uad_id, sg_tipo_situacao_unidade, cd_unidade_administrativa_referencia,
+                                                       cd_endereco_grh) AS _source
+                                       ON _source.uad_codigo = _target.uad_codigo
+                                      AND _source.tua_id_escola = _target.tua_id
+                                      AND _source.ent_id = _target.ent_id
+                                      WHEN MATCHED THEN
+                                           UPDATE SET uad_nome = _source.uad_nome,
+                                                      uad_dataAlteracao = GETDATE(),
+                                                      uad_idSuperior = _source.uad_idSuperior,
+                                                      uad_codigoIntegracao = _source.cd_endereco_grh,
+                                                      uad_situacao = _source.uad_situacao
+                                      WHEN NOT MATCHED THEN
+                                           INSERT(ent_id, tua_id, uad_codigo, uad_nome, uad_idSuperior, uad_situacao)
+                                           VALUES(@ent_id, @tua_id_escola, _source.uad_codigo, _source.uad_nome,
+                                                   _source.uad_idSuperior, _source.uad_situacao)
+                                      WHEN NOT MATCHED BY SOURCE AND((_target.tua_id = @tua_id_escola) AND(_target.uad_nome not like 'LAB DRE%'))
+                                           THEN
+                                           UPDATE SET uad_situacao = 3, uad_dataAlteracao = GETDATE(); ";
+
+                    var result = await conn.ExecuteAsync(query);
                 }
                 catch (System.Exception ex)
                 {

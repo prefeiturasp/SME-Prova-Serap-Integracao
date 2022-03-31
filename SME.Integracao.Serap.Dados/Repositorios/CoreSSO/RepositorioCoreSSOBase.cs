@@ -19,20 +19,14 @@ namespace SME.Integracao.Serap.Dados
             _connectionStrings = connectionStrings ?? throw new ArgumentNullException(nameof(connectionStrings));
         }
 
-        protected IDbConnection ObterConexaoLeitura()
-        {
-            
-            var conexao = new SqlConnection(_connectionStrings.CoreSSOLeitura);
-            conexao.Open();
-            return conexao;
-        }
-
         protected IDbConnection ObterConexao()
         {
-
+            
             var conexao = new SqlConnection(_connectionStrings.CoreSSO);
             conexao.Open();
             return conexao;
         }
+
+       
     }
 }

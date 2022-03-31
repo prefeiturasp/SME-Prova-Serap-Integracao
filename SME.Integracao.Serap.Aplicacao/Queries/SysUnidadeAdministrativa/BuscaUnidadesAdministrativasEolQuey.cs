@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Aplicacao
 {
-    class CarregaDadosEscolaQueryHandler
+   public class BuscaUnidadesAdministrativasEolQuey
     {
+
     }
 }

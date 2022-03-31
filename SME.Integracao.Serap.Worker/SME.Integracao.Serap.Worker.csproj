@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
@@ -25,15 +26,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Convex\source\repos\SME.Integracao.Serap.Worker\SME.Integracao.Serap.Worker\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Convex\source\repos\SME.Integracao.Serap.Worker\SME.Integracao.Serap.Worker\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SME.Integracao.Serap.Aplicacao\SME.Integracao.Serap.Aplicacao.csproj" />
+    <ProjectReference Include="..\SME.Integracao.Serap.Infra\SME.Integracao.Serap.Infra.csproj" />
     <ProjectReference Include="..\SME.Integracao.Serap.IoC\SME.Integracao.Serap.IoC.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EditorConfigFiles Remove="C:\Users\Convex\source\repos\SME.Integracao.Serap.Worker\SME.Integracao.Serap.Worker\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EditorConfigFiles Remove="C:\Users\Convex\source\repos\SME.Integracao.Serap.Worker\SME.Integracao.Serap.Worker\.editorconfig" />
   </ItemGroup>
 
 </Project>
