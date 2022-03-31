@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SME.Integracao.Serap.Dados\SME.Integracao.Serap.Dados.csproj" />
     <ProjectReference Include="..\SME.Integracao.Serap.Infra\SME.Integracao.Serap.Infra.csproj" />
   </ItemGroup>
 

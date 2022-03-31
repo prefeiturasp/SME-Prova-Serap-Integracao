@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31410.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Integracao.Serap.Worker", "SME.Integracao.Serap.Worker\SME.Integracao.Serap.Worker.csproj", "{DC6DC265-6BB9-48CD-93C4-5359AB56458C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.Integracao.Serap.Worker", "SME.Integracao.Serap.Worker\SME.Integracao.Serap.Worker.csproj", "{DC6DC265-6BB9-48CD-93C4-5359AB56458C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Integracao.Serap.IoC", "SME.Integracao.Serap.IoC\SME.Integracao.Serap.IoC.csproj", "{3F882EAF-B636-4D05-A040-E1ABA5E7738E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.Integracao.Serap.IoC", "SME.Integracao.Serap.IoC\SME.Integracao.Serap.IoC.csproj", "{3F882EAF-B636-4D05-A040-E1ABA5E7738E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Integracao.Serap.Infra", "SME.Integracao.Serap.Infra\SME.Integracao.Serap.Infra.csproj", "{C82C1972-166C-4090-876B-0EA74FC9595D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.Integracao.Serap.Infra", "SME.Integracao.Serap.Infra\SME.Integracao.Serap.Infra.csproj", "{C82C1972-166C-4090-876B-0EA74FC9595D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CD13698E-D2B2-442D-B63D-E3D5F320A725}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Integracao.Serap.Dominio", "SME.Integracao.Serap.Dominio\SME.Integracao.Serap.Dominio.csproj", "{E5F00DC3-BFD4-41C0-8925-39443E62803C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.Integracao.Serap.Dominio", "SME.Integracao.Serap.Dominio\SME.Integracao.Serap.Dominio.csproj", "{E5F00DC3-BFD4-41C0-8925-39443E62803C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Integracao.Serap.Dados", "SME.Integracao.Serap.Dados\SME.Integracao.Serap.Dados.csproj", "{D9627EFD-0F6C-4AFE-BDFD-5230F1324C42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.Integracao.Serap.Dados", "SME.Integracao.Serap.Dados\SME.Integracao.Serap.Dados.csproj", "{D9627EFD-0F6C-4AFE-BDFD-5230F1324C42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Integracao.Serap.Aplicacao", "SME.Integracao.Serap.Aplicacao\SME.Integracao.Serap.Aplicacao.csproj", "{F6E0F871-6CBA-4B59-BAD4-DFC0928ACAFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.Integracao.Serap.Aplicacao", "SME.Integracao.Serap.Aplicacao\SME.Integracao.Serap.Aplicacao.csproj", "{F6E0F871-6CBA-4B59-BAD4-DFC0928ACAFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

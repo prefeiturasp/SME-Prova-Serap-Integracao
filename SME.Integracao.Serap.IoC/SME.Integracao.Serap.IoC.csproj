@@ -9,12 +9,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="10.3.6" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SME.Integracao.Serap.Aplicacao\SME.Integracao.Serap.Aplicacao.csproj" />
+    <ProjectReference Include="..\SME.Integracao.Serap.Dados\SME.Integracao.Serap.Dados.csproj" />
   </ItemGroup>
 
 </Project>

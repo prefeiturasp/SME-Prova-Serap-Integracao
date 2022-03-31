@@ -14,4 +14,8 @@
     <Folder Include="Dtos\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SME.Integracao.Serap.Dominio\SME.Integracao.Serap.Dominio.csproj" />
+  </ItemGroup>
+
 </Project>
