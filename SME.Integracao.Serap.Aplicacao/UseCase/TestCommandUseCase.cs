@@ -20,8 +20,21 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
         {
-            await mediator.Send(new TestCommand());
-            return true;
+            try
+            {
+                await mediator.Send(new TestCommand());
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var mensagem = $"ERRO WORKER INTEGRACAO - {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)}";
+
+                await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, $"Erros: {ex.Message}", rastreamento: ex?.StackTrace, excecaoInterna: ex.InnerException?.Message));
+                return false;
+            }
+          
+           
+          
         }
     }
 
