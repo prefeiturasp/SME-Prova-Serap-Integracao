@@ -31,13 +31,13 @@ namespace SME.Integracao.Serap.Worker
         private IMediator mediator;
 
         public WorkerRabbit(ILogger<WorkerRabbit> logger, RabbitOptions rabbitOptions,
-            IServiceScopeFactory serviceScopeFactory, ConnectionFactory connectionFactory, IMediator mediator) //, ServicoTelemetria servicoTelemetria)
+            IServiceScopeFactory serviceScopeFactory, ConnectionFactory connectionFactory, IMediator mediator) // , ServicoTelemetria servicoTelemetria)
         {
             _logger = logger;
             this.rabbitOptions = rabbitOptions ?? throw new ArgumentNullException(nameof(rabbitOptions));
             this.serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
 
-         //   this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
+           //this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
            // this.telemetriaOptions = telemetriaOptions ?? throw new ArgumentNullException(nameof(telemetriaOptions));
 
             this.connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
@@ -161,12 +161,10 @@ namespace SME.Integracao.Serap.Worker
                     using var scope = serviceScopeFactory.CreateScope();
                     var casoDeUso = scope.ServiceProvider.GetService(comandoRabbit.TipoCasoUso);
 
-                    var metodo = ObterMetodo(comandoRabbit.TipoCasoUso, "Executar");
-                    await servicoTelemetria.RegistrarAsync(async () =>
-                        await metodo.InvokeAsync(casoDeUso, new object[] { mensagemRabbit }),
-                                                "RabbitMQ",
-                                                "TratarMensagem",
-                                                rota);
+                    var metodo = ObterMetodo(comandoRabbit.TipoCasoUso, "Executar").InvokeAsync(casoDeUso, new object[] { mensagemRabbit });
+                                              
+                   
+                      
 
                     channel.BasicAck(ea.DeliveryTag, false);
                 }

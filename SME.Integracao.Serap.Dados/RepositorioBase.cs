@@ -11,5 +11,6 @@ namespace SME.Integracao.Serap.Dados
         {
             this.connectionStrings = connectionStrings ?? throw new ArgumentNullException(nameof(connectionStrings));
         }
+
     }
 }
