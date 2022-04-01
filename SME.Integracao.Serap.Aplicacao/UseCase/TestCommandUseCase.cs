@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Aplicacao.UseCase
 {
-   public class TestCommandUseCase : ITestCommandUseCase
+    public class TestCommandUseCase : ITestCommandUseCase
     {
         private readonly IMediator mediator;
 
@@ -22,7 +22,9 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
         {
             try
             {
+                var mensagem = $"WORKER INTEGRAÇÃO SUCESSO - {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)}";
                 await mediator.Send(new TestCommand());
+                await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, "TABELAS: SYS_TipoUnidadeAdministrativa, SYS_UnidadeAdministrativa atualizadas com sucesso"));
                 return true;
             }
             catch (Exception ex)
@@ -32,9 +34,6 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
                 await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, $"Erros: {ex.Message}", rastreamento: ex?.StackTrace, excecaoInterna: ex.InnerException?.Message));
                 return false;
             }
-          
-           
-          
         }
     }
 
