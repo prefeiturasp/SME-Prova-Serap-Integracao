@@ -426,64 +426,58 @@ namespace SME.Integracao.Serap.Dados
 
                 try
                 {
-                    //var query = @" DECLARE @ent_id UNIQUEIDENTIFIER, @tua_id_escola UNIQUEIDENTIFIER, @tua_id_setor UNIQUEIDENTIFIER,
-                    //                       @tua_id_biblioteca UNIQUEIDENTIFIER
+                    var query = @"DECLARE @ent_id UNIQUEIDENTIFIER, @tua_id_escola UNIQUEIDENTIFIER, @tua_id_setor UNIQUEIDENTIFIER,
+                                           @tua_id_biblioteca UNIQUEIDENTIFIER
 
-                    //                  SET @ent_id = (SELECT ent_id FROM CoreSSO..SYS_Entidade WHERE LOWER(ent_sigla) = 'smesp')
-                    //                  SET @tua_id_escola = (SELECT tua_id FROM CoreSSO..SYS_TipoUnidadeAdministrativa WHERE LOWER(tua_nome) = 'escola')
-                    //                  SET @tua_id_setor = (SELECT tua_id FROM CoreSSO..SYS_TipoUnidadeAdministrativa WHERE LOWER(tua_nome) = 'setor')
-                    //                  SET @tua_id_biblioteca = (SELECT tua_id FROM CoreSSO..SYS_TipoUnidadeAdministrativa WHERE LOWER(tua_nome) = 'Biblioteca')
-
-                    //                  MERGE CoreSSO..SYS_UnidadeAdministrativa _target
-                    //                  USING (SELECT cd_unidade_educacao AS uad_codigo, dc_tipo_unidade_educacao, nm_unidade_educacao AS uad_nome,
-                    //                                nm_logradouro, cd_nr_endereco, nm_bairro, cd_setor_distrito, nm_micro_regiao AS nm_setor,
-                    //                                LEFT(cd_setor_distrito, 2) as cd_distrito, nm_distrito_mec AS nm_distrito,
-                    //                                setor.uad_id AS uad_idSuperior, cd_unidade_administrativa_referencia as cd_dre,
-                    //                                CASE sg_tipo_situacao_unidade WHEN 'ATIVA' THEN 1 ELSE 3 END AS uad_situacao,
-                    //                                @tua_id_escola AS tua_id_escola, @ent_id AS ent_id, cd_endereco_grh
-                    //                            FROM [10.49.16.23\SME_PRD].[Manutencao].[dbo].[tmp_CoreSME_unidade_educacao_dados_gerais] ueg WITH(READUNCOMMITTED)
-                    //                                INNER JOIN
-                    //                                (SELECT uad_id, uad_codigo, uad_nome,
-                    //                                        ROW_NUMBER() OVER (PARTITION BY uad_codigo ORDER BY uad_dataCriacao) AS rowNum
-                    //                                   FROM CoreSSO..SYS_UnidadeAdministrativa WITH(READUNCOMMITTED)
-                    //                                  WHERE tua_id = @tua_id_setor) AS setor
-                    //                                 ON RTRIM(LTRIM(setor.uad_codigo)) = ueg.cd_setor_distrito
-                    //                                AND setor.rowNum = 1
-                    //                          WHERE ((dc_tipo_unidade_educacao = 'ESCOLA')
-                    //                                 -- filtro para pegar os CEUs Puros
-                    //                                 or(cd_unidade_educacao like '200%'
-                    //                                     and dc_tipo_unidade_educacao = 'UNIDADE ADMINISTRATIVA'))
-                    //                          GROUP BY cd_unidade_educacao, dc_tipo_unidade_educacao, nm_unidade_educacao, nm_logradouro,
-                    //                                   cd_nr_endereco, nm_bairro, cd_setor_distrito, nm_micro_regiao, nm_distrito_mec,
-                    //                                   setor.uad_id, sg_tipo_situacao_unidade, cd_unidade_administrativa_referencia,
-                    //                                   cd_endereco_grh) AS _source
-                    //                   ON _source.uad_codigo = _target.uad_codigo
-                    //                  AND _source.tua_id_escola = _target.tua_id
-                    //                  AND _source.ent_id = _target.ent_id
-                    //                  WHEN MATCHED THEN
-                    //                       UPDATE SET uad_nome = _source.uad_nome,
-                    //                                  uad_dataAlteracao = GETDATE(),
-                    //                                  uad_idSuperior = _source.uad_idSuperior,
-                    //                                  uad_codigoIntegracao = _source.cd_endereco_grh,
-                    //                                  uad_situacao = _source.uad_situacao
-                    //                  WHEN NOT MATCHED THEN
-                    //                       INSERT(ent_id, tua_id, uad_codigo, uad_nome, uad_idSuperior, uad_situacao)
-                    //                       VALUES(@ent_id, @tua_id_escola, _source.uad_codigo, _source.uad_nome,
-                    //                               _source.uad_idSuperior, _source.uad_situacao)
-                    //                  WHEN NOT MATCHED BY SOURCE AND((_target.tua_id = @tua_id_escola) AND(_target.uad_nome not like 'LAB DRE%'))
-                    //                       THEN
-                    //                       UPDATE SET uad_situacao = 3, uad_dataAlteracao = GETDATE(); ";
-
-                    var query = @"SELECT top(10) uad_id, uad_codigo, uad_nome
-                                                           
-                                                       FROM CoreSSO..SYS_UnidadeAdministrativa";
-
-                    var result = await conn.QueryAsync(query);
+                                      SET @ent_id = (SELECT ent_id FROM CoreSSO..SYS_Entidade WHERE LOWER(ent_sigla) = 'smesp')
+                                      SET @tua_id_escola = (SELECT tua_id FROM CoreSSO..SYS_TipoUnidadeAdministrativa WHERE LOWER(tua_nome) = 'escola')
+                                      SET @tua_id_setor = (SELECT tua_id FROM CoreSSO..SYS_TipoUnidadeAdministrativa WHERE LOWER(tua_nome) = 'setor')
+                                      SET @tua_id_biblioteca = (SELECT tua_id FROM CoreSSO..SYS_TipoUnidadeAdministrativa WHERE LOWER(tua_nome) = 'Biblioteca')
+                                      
+                                        UPDATE CoreSSO..SYS_TipoUnidadeAdministrativa set tua_situacao = 1, tua_dataAlteracao = GETDATE();
+                    
+                                      MERGE CoreSSO..SYS_UnidadeAdministrativa _target
+                                      USING (SELECT cd_unidade_educacao AS uad_codigo, dc_tipo_unidade_educacao, nm_unidade_educacao AS uad_nome,
+                                                    nm_logradouro, cd_nr_endereco, nm_bairro, cd_setor_distrito, nm_micro_regiao AS nm_setor,
+                                                    LEFT(cd_setor_distrito, 2) as cd_distrito, nm_distrito_mec AS nm_distrito,
+                                                    setor.uad_id AS uad_idSuperior, cd_unidade_administrativa_referencia as cd_dre,
+                                                    CASE sg_tipo_situacao_unidade WHEN 'ATIVA' THEN 1 ELSE 3 END AS uad_situacao,
+                                                    @tua_id_escola AS tua_id_escola, @ent_id AS ent_id, cd_endereco_grh
+                                                FROM [10.49.16.23\SME_PRD].[Manutencao].[dbo].[tmp_CoreSME_unidade_educacao_dados_gerais] ueg WITH(READUNCOMMITTED)
+                                                    INNER JOIN
+                                                    (SELECT uad_id, uad_codigo, uad_nome,
+                                                            ROW_NUMBER() OVER (PARTITION BY uad_codigo ORDER BY uad_dataCriacao) AS rowNum
+                                                       FROM CoreSSO..SYS_UnidadeAdministrativa WITH(READUNCOMMITTED)
+                                                      WHERE tua_id = @tua_id_setor) AS setor
+                                                     ON RTRIM(LTRIM(setor.uad_codigo)) = ueg.cd_setor_distrito
+                                                    AND setor.rowNum = 1
+                                              WHERE ((dc_tipo_unidade_educacao = 'ESCOLA')
+                                                     -- filtro para pegar os CEUs Puros
+                                                     or(cd_unidade_educacao like '200%'
+                                                         and dc_tipo_unidade_educacao = 'UNIDADE ADMINISTRATIVA'))
+                                              GROUP BY cd_unidade_educacao, dc_tipo_unidade_educacao, nm_unidade_educacao, nm_logradouro,
+                                                       cd_nr_endereco, nm_bairro, cd_setor_distrito, nm_micro_regiao, nm_distrito_mec,
+                                                       setor.uad_id, sg_tipo_situacao_unidade, cd_unidade_administrativa_referencia,
+                                                       cd_endereco_grh) AS _source
+                                       ON _source.uad_codigo = _target.uad_codigo
+                                      AND _source.tua_id_escola = _target.tua_id
+                                      AND _source.ent_id = _target.ent_id
+                                      WHEN MATCHED THEN
+                                           UPDATE SET uad_nome = _source.uad_nome,
+                                                      uad_dataAlteracao = GETDATE(),
+                                                      uad_idSuperior = _source.uad_idSuperior,
+                                                      uad_codigoIntegracao = _source.cd_endereco_grh,
+                                                      uad_situacao = _source.uad_situacao
+                                      WHEN NOT MATCHED THEN
+                                           INSERT(ent_id, tua_id, uad_codigo, uad_nome, uad_idSuperior, uad_situacao)
+                                           VALUES(@ent_id, @tua_id_escola, _source.uad_codigo, _source.uad_nome,
+                                                   _source.uad_idSuperior, _source.uad_situacao)
+                                      WHEN NOT MATCHED BY SOURCE AND((_target.tua_id = @tua_id_escola) AND(_target.uad_nome not like 'LAB DRE%'))
+                                           THEN
+                                           UPDATE SET uad_situacao = 3, uad_dataAlteracao = GETDATE(); ";
+                    var result = await conn.ExecuteAsync(query);
                 }
-                catch (System.Exception ex)
-                {
-                    throw ex;
-                }
+              
                 finally
                 {
                     conn.Close();

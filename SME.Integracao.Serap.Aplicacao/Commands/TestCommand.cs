@@ -26,18 +26,8 @@ namespace SME.Integracao.Serap.Aplicacao.Commands
 
         public async Task<bool> Handle(TestCommand request, CancellationToken cancellationToken)
         {
-
-            try
-            {
                 await repositorioSysUnidadeAdministrativa.AtualizaSysUnidadeAdministativa();
                 return true;
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception ("Teste de erro na fila" + ex.Message);
-            }
-
         }
 
     }
