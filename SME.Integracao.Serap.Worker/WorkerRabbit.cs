@@ -89,7 +89,7 @@ namespace SME.Integracao.Serap.Worker
 
         private void RegistrarUseCases()
         {
-            comandos.Add(RotasRabbit.SysUnidadeAdministrativa, new ComandoRabbit("SincronizaçãoUnidades", typeof(ITestCommandUseCase)));
+            comandos.Add(RotasRabbit.SysUnidadeAdministrativa, new ComandoRabbit("SincronizaçãoUnidades", typeof(ITrataSysUnidadeAdministrativaUseCase)));
         
         }
 
