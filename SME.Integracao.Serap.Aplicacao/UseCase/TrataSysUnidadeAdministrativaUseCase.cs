@@ -57,10 +57,6 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
 
                 }
 
-              
-
-
-
                 return true;
             }
             catch (Exception ex)

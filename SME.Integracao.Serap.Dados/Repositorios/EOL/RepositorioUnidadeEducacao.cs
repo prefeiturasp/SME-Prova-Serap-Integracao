@@ -20,6 +20,8 @@ namespace SME.Integracao.Serap.Dados
             using var conn = ObterConexao();
             try
             {
+                string linkedServerSME = ObterLinkedServerSME();
+
                 var query = @"SELECT top (1000)
                             		cast(cd_unidade_educacao as varchar(6)) as				 CodigoUnidadeEducacao      
                             		, cast(dc_tipo_unidade_educacao as varchar(25)) as		 DescricaoTipoUnidadeEducacao
@@ -43,8 +45,8 @@ namespace SME.Integracao.Serap.Dados
                             		END AS                                                    SituacaoUnidadeEducacao 
                             	
 	
-                              		, (SELECT top 1 tua_id FROM [10.49.16.23\SME_PRD].[CoreSSO].[dbo].[SYS_TipoUnidadeAdministrativa] WHERE LOWER(tua_nome) = 'escola') AS TuaIdEscola
-                              		, (SELECT top 1 ent_id FROM [10.49.16.23\SME_PRD].[CoreSSO].[dbo].[SYS_Entidade] WHERE LOWER(ent_sigla) = 'smesp')                   AS EntId
+                              		, (SELECT top 1 tua_id FROM [@linkedServerSME].[CoreSSO].[dbo].[SYS_TipoUnidadeAdministrativa] WHERE LOWER(tua_nome) = 'escola') AS TuaIdEscola
+                              		, (SELECT top 1 ent_id FROM [@linkedServerSME].[CoreSSO].[dbo].[SYS_Entidade] WHERE LOWER(ent_sigla) = 'smesp')                   AS EntId
                               		, cast(cd_unidade_administrativa_referencia as varchar(6))                                                                  as CodigodUnidadeAdministrativaRef
                               	FROM
                               		v_unidade_educacao_dados_gerais ueg WITH(READUNCOMMITTED)
@@ -55,9 +57,9 @@ namespace SME.Integracao.Serap.Dados
                               				, uad_codigo
                               				, uad_nome
                               			FROM
-                              				[10.49.16.23\SME_PRD].[CoreSSO].[dbo].[SYS_UnidadeAdministrativa] WITH(READUNCOMMITTED)
+                              				[@linkedServerSME].[CoreSSO].[dbo].[SYS_UnidadeAdministrativa] WITH(READUNCOMMITTED)
                               			WHERE
-                              				tua_id = (SELECT tua_id FROM [10.49.16.23\SME_PRD].[CoreSSO].[dbo].[SYS_TipoUnidadeAdministrativa] WHERE LOWER(tua_nome) = 'setor')
+                              				tua_id = (SELECT tua_id FROM [@linkedServerSME].[CoreSSO].[dbo].[SYS_TipoUnidadeAdministrativa] WHERE LOWER(tua_nome) = 'setor')
                               		) AS setor
                               			--ON (setor.uad_nome = ueg.nm_micro_regiao)
                               			ON (setor.uad_codigo = ueg.cd_setor_distrito)
@@ -82,7 +84,8 @@ namespace SME.Integracao.Serap.Dados
                               		,sg_tipo_situacao_unidade
                               		, cd_unidade_administrativa_referencia
                               ";
-              return await conn.QueryAsync<UnidadeEducacaoDadosGeraisDto>(query, commandTimeout: 600);
+
+                return await conn.QueryAsync<UnidadeEducacaoDadosGeraisDto>(query, new { linkedServerSME }, commandTimeout: 600);
             }
             catch (System.Exception ex)
             {

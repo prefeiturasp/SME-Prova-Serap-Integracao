@@ -25,6 +25,11 @@ namespace SME.Integracao.Serap.Dados
             return conexao;
         }
 
+        protected string ObterLinkedServerSME()
+        {
+            return connectionStringOptions.LinkedServerSME;
+        }
+
 
     }
 }
