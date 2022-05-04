@@ -32,7 +32,7 @@ namespace SME.Integracao.Serap.Dados
                             		, cast(cd_nr_endereco as varchar(6))					 CodigoNrEndereco           
                             		, cast(dc_complemento_endereco as varchar(30)) as		 DescricaoComplementoEndereco
                             		, cast(nm_bairro as varchar(40)) as						 NomeBairro                 
-                            		, cd_cep 						 as						 CodigoCep                  
+                            		, right('00000000' + CONVERT(VARCHAR(8), cd_cep),8) as	 CodigoCep                  
                             		, cast(nm_distrito_mec as varchar(100)) as				 NomeDistritoMec            
                             		, cast(nm_micro_regiao as varchar(40)) as				 NomeMicroRegiao            
                             		, cd_setor_distrito										 CodigoSetorDistrito        

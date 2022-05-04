@@ -1,8 +1,5 @@
 ﻿using Dapper.FluentMap;
 using Dapper.FluentMap.Dommel;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SME.Integracao.Serap.Dados.Mapeamentos
 {
@@ -13,6 +10,7 @@ namespace SME.Integracao.Serap.Dados.Mapeamentos
             FluentMapper.Initialize(config =>
             {
                 config.AddMap(new SysUnidadeAdministrativaMap());
+                config.AddMap(new EndEnderecoMap());
 
                 config.ForDommel();
             });

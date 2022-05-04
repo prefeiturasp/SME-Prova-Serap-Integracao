@@ -15,7 +15,7 @@ namespace SME.Integracao.Serap.Infra
         public string CodigoNrEndereco { get; set; }
         public string DescricaoComplementoEndereco { get; set; }
         public string NomeBairro { get; set; }
-        public int CodigoCep { get; set; }
+        public string CodigoCep { get; set; }
         public string NomeDistritoMec { get; set; }
         public string NomeMicroRegiao { get; set; }
         public int CodigoSetorDistrito { get; set; }
