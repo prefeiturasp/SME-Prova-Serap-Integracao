@@ -31,8 +31,8 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
                 await PopularParametrosCoreSso();
 
                 var novosEnderecos = await TratarEnderecos(unidadesAdministrativasEOL, unidadesAdministrativasCoreSSO);
-
                 var tempEnderecos = GerarListaTempEnderecos(unidadesAdministrativasEOL, unidadesAdministrativasCoreSSO, novosEnderecos);
+                await TratarUnidadesAdministrativasEnderecos(tempEnderecos);
 
                 var listaCodigosEol = unidadesAdministrativasEOL.Select(a => a.CodigoUnidadeEducacao).Distinct().ToList();
                 var listaCodigosCoreSSO = unidadesAdministrativasCoreSSO.Select(a => a.Codigo).Distinct().ToList();
@@ -48,7 +48,7 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
                     {
                         Codigo = a.CodigoUnidadeEducacao,
                         CodigoIntegracao = a.CodigoNrEndereco,
-                        EntidadeId = Guid.Parse("6CF424DC-8EC3-E011-9B36-00155D033206"),
+                        EntidadeId = parametrosCoreSso.EntIdSmeSp,
                         Nome = a.NomeUnidadeEducacao,
                         Sigla = a.SiglaTipoEscola,
                         Situacao = a.SituacaoUnidadeEducacao,
@@ -110,7 +110,7 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
             return enderecosParaInserir;
         }
 
-        private List<object> GerarListaTempEnderecos(IEnumerable<UnidadeEducacaoDadosGeraisDto> unidadesAdministrativasEOL,
+        private List<TempEnderecoDto> GerarListaTempEnderecos(IEnumerable<UnidadeEducacaoDadosGeraisDto> unidadesAdministrativasEOL,
                                                    IEnumerable<SysUnidadeAdministrativa> unidadesAdministrativasCoreSSO,
                                                    List<EndEndereco> novosEnderecos)
         {
@@ -156,7 +156,7 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
                                   Logradouro = end.Logradouro
                               };
 
-            return (List<object>)query_final.ToList().Distinct();
+            return (List<TempEnderecoDto>)query_final.ToList().Distinct();
         }
 
         private List<EndEndereco> MapearParaEndereco(IEnumerable<UnidadeEducacaoDadosGeraisDto> unidadesEducacao)
@@ -175,6 +175,31 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
                                     1
                                )
             ).ToList();
+        }
+
+        private async Task TratarUnidadesAdministrativasEnderecos(List<TempEnderecoDto> tempEnderecos)
+        {
+            var uaes = await mediator.Send(new ObterUnidadesAdministrativasEnderecosQuery());
+
+            var atualizar = uaes.Where(uae => tempEnderecos.Any(end => end.EntId == uae.EntId && end.UadId == uae.UadId))
+                .Select(uae => new SysUnidadeAdministrativaEndereco
+                {
+                    Numero = tempEnderecos.Where(end => end.EntId == uae.EntId && end.UadId == uae.UadId).FirstOrDefault().CdNrEndereco,
+                    Complemento = tempEnderecos.Where(end => end.EntId == uae.EntId && end.UadId == uae.UadId).FirstOrDefault().ComplementoEndereco
+                });
+
+            var inserir = tempEnderecos.Where(end => !uaes.Any(uae => end.EntId == uae.EntId && end.UadId == uae.UadId));
+
+            foreach (SysUnidadeAdministrativaEndereco uae in atualizar)
+            {
+                await mediator.Send(new AtualizarUnidadeAdministrativaEnderecoCommand(uae));
+            }
+
+            foreach (TempEnderecoDto end in inserir)
+            {
+                var uae = new SysUnidadeAdministrativaEndereco(end.EntId, end.UadId, end.EndId, end.CdNrEndereco, end.ComplementoEndereco);
+                await mediator.Send(new InserirUnidadeAdministrativaEnderecoCommand(uae));
+            }
         }
     }
 }
