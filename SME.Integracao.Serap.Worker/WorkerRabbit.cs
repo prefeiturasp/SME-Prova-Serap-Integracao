@@ -89,7 +89,7 @@ namespace SME.Integracao.Serap.Worker
 
         private void RegistrarUseCases()
         {
-            comandos.Add(RotasRabbit.SysUnidadeAdministrativa, new ComandoRabbit("SincronizaçãoUnidades", typeof(ITestCommandUseCase)));
+            comandos.Add(RotasRabbit.SysUnidadeAdministrativa, new ComandoRabbit("SincronizaçãoUnidades", typeof(ITrataSysUnidadeAdministrativaUseCase)));
         
         }
 
@@ -161,11 +161,8 @@ namespace SME.Integracao.Serap.Worker
                     using var scope = serviceScopeFactory.CreateScope();
                     var casoDeUso = scope.ServiceProvider.GetService(comandoRabbit.TipoCasoUso);
 
-                    var metodo = ObterMetodo(comandoRabbit.TipoCasoUso, "Executar").InvokeAsync(casoDeUso, new object[] { mensagemRabbit });
+                    await ObterMetodo(comandoRabbit.TipoCasoUso, "Executar").InvokeAsync(casoDeUso, new object[] { mensagemRabbit });
                                               
-                   
-                      
-
                     channel.BasicAck(ea.DeliveryTag, false);
                 }
                 catch (Exception ex)
