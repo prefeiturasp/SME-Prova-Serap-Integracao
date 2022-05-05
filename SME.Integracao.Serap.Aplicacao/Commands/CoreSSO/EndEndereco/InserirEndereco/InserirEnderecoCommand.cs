@@ -3,7 +3,7 @@ using SME.Integracao.Serap.Dominio;
 
 namespace SME.Integracao.Serap.Aplicacao
 {
-    public class InserirEnderecoCommand : IRequest<bool>
+    public class InserirEnderecoCommand : IRequest<EndEndereco>
     {
         public InserirEnderecoCommand(EndEndereco endereco)
         {

@@ -13,6 +13,7 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
     public class TrataSysUnidadeAdministrativaUseCase : ITrataSysUnidadeAdministrativaUseCase
     {
         private readonly IMediator mediator;
+        private ParametrosCoreSsoDto parametrosCoreSso { get; set; }
 
         public TrataSysUnidadeAdministrativaUseCase(IMediator mediator)
         {
@@ -27,9 +28,11 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
 
                 var unidadesAdministrativasEOL = await mediator.Send(new BuscaUnidadesAdministrativasEolQuery());
                 var unidadesAdministrativasCoreSSO = await mediator.Send(new BuscaUnidadesAdministrativasCoreSSOQuery());
-                var cidId = await mediator.Send(new ObterCidIdQuery());
+                await PopularParametrosCoreSso();
 
-                await TratarEnderecoUnidades(unidadesAdministrativasEOL, unidadesAdministrativasCoreSSO, cidId);
+                var novosEnderecos = await TratarEnderecos(unidadesAdministrativasEOL, unidadesAdministrativasCoreSSO);
+
+                var tempEnderecos = GerarListaTempEnderecos(unidadesAdministrativasEOL, unidadesAdministrativasCoreSSO, novosEnderecos);
 
                 var listaCodigosEol = unidadesAdministrativasEOL.Select(a => a.CodigoUnidadeEducacao).Distinct().ToList();
                 var listaCodigosCoreSSO = unidadesAdministrativasCoreSSO.Select(a => a.Codigo).Distinct().ToList();
@@ -71,13 +74,18 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
             }
         }
 
-        private async Task TratarEnderecoUnidades(IEnumerable<UnidadeEducacaoDadosGeraisDto> unidadesAdministrativasEOL, IEnumerable<SysUnidadeAdministrativa> unidadesAdministrativasCoreSSO, Guid cidId)
+        private async Task PopularParametrosCoreSso()
+        {
+            parametrosCoreSso = await mediator.Send(new ObterParametrosCoreSsoQuery());
+        }
+
+        private async Task<List<EndEndereco>> TratarEnderecos(IEnumerable<UnidadeEducacaoDadosGeraisDto> unidadesAdministrativasEOL, IEnumerable<SysUnidadeAdministrativa> unidadesAdministrativasCoreSSO)
         {
             var enderecosUnidadesParaAlterar = unidadesAdministrativasEOL
                                 .Where(eol => unidadesAdministrativasCoreSSO.Any(core => core.EntidadeId == eol.EntId
                                                                                       && core.TuaId == eol.TuaIdEscola
                                                                                       && core.Codigo == eol.CodigoUnidadeEducacao));
-            var enderecosParaAlterar = MapearParaEndereco(enderecosUnidadesParaAlterar, cidId);
+            var enderecosParaAlterar = MapearParaEndereco(enderecosUnidadesParaAlterar);
             foreach (EndEndereco endereco in enderecosParaAlterar)
             {
                 await mediator.Send(new AtualizarEnderecoCommand(endereco));
@@ -87,7 +95,7 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
                 .Where(eol => !unidadesAdministrativasCoreSSO.Any(core => core.EntidadeId == eol.EntId
                                                                       && core.TuaId == eol.TuaIdEscola
                                                                       && core.Codigo == eol.CodigoUnidadeEducacao));
-            var enderecosParaInserir = MapearParaEndereco(enderecosUnidadesParaInserir, cidId);
+            var enderecosParaInserir = MapearParaEndereco(enderecosUnidadesParaInserir);
             foreach (EndEndereco endereco in enderecosParaInserir)
             {
                 int integridade = enderecosParaInserir.Where(end => end.Cep == endereco.Cep
@@ -95,20 +103,72 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
                                                                  && end.Bairro == endereco.Bairro
                                                                  && end.Distrito == endereco.Distrito).Count();
                 endereco.Integridade = integridade;
-                await mediator.Send(new InserirEnderecoCommand(endereco));
+                var novoEndereco = await mediator.Send(new InserirEnderecoCommand(endereco));
+                endereco.Id = novoEndereco.Id;
             }
+
+            return enderecosParaInserir;
         }
 
-        private List<EndEndereco> MapearParaEndereco(IEnumerable<UnidadeEducacaoDadosGeraisDto> unidadesEducacao, Guid cidId)
+        private List<object> GerarListaTempEnderecos(IEnumerable<UnidadeEducacaoDadosGeraisDto> unidadesAdministrativasEOL,
+                                                   IEnumerable<SysUnidadeAdministrativa> unidadesAdministrativasCoreSSO,
+                                                   List<EndEndereco> novosEnderecos)
         {
-            return unidadesEducacao.Select(x => 
+            var query = from core in unidadesAdministrativasCoreSSO
+                        join eol in unidadesAdministrativasEOL on
+                        new
+                        {
+                            Codigo = core.Codigo
+                        }
+                        equals
+                        new
+                        {
+                            Codigo = eol.CodigoUnidadeEducacao
+                        }
+                        where core.EntidadeId == parametrosCoreSso.EntIdSmeSp
+                           && core.TuaId == parametrosCoreSso.TuaIdDre
+                        select new { Core = core, Eol = eol };
+
+            var query_final = from a in query
+                              join end in novosEnderecos on
+                              new
+                              {
+                                  Logradouro = a.Eol.NomeLogradouro,
+                                  Cep = a.Eol.CodigoCep,
+                                  Bairro = a.Eol.NomeBairro,
+                                  Distrito = a.Eol.NomeDistritoMec
+                              }
+                              equals
+                              new
+                              {
+                                  Logradouro = end.Logradouro,
+                                  Cep = end.Cep,
+                                  Bairro = end.Bairro,
+                                  Distrito = end.Distrito
+                              }
+                              select new
+                              {
+                                  EntId = parametrosCoreSso.EntIdSmeSp,
+                                  UadId = a.Core.Id,
+                                  EndId = end.Id,
+                                  CdNrEndereco = a.Eol.CodigoNrEndereco,
+                                  ComplementoEndereco = a.Eol.DescricaoComplementoEndereco,
+                                  Logradouro = end.Logradouro
+                              };
+
+            return (List<object>)query_final.ToList().Distinct();
+        }
+
+        private List<EndEndereco> MapearParaEndereco(IEnumerable<UnidadeEducacaoDadosGeraisDto> unidadesEducacao)
+        {
+            return unidadesEducacao.Select(x =>
                 new EndEndereco(
-                                    x.CodigoCep, 
-                                    x.NomeLogradouro, 
-                                    x.NomeBairro, 
+                                    x.CodigoCep,
+                                    x.NomeLogradouro,
+                                    x.NomeBairro,
                                     x.NomeDistritoMec,
                                     null,
-                                    cidId,
+                                    parametrosCoreSso.CidIdSaoPaulo,
                                     1,
                                     DateTime.Now,
                                     DateTime.Now,

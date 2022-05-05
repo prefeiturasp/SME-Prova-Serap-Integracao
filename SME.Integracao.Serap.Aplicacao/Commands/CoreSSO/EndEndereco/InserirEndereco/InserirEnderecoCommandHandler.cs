@@ -1,12 +1,13 @@
 ﻿using MediatR;
 using SME.Integracao.Serap.Dados;
+using SME.Integracao.Serap.Dominio;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Aplicacao
 {
-    public class InserirEnderecoCommandHandler : IRequestHandler<InserirEnderecoCommand, bool>
+    public class InserirEnderecoCommandHandler : IRequestHandler<InserirEnderecoCommand, EndEndereco>
     {
         private readonly IRepositorioEndEndereco repositorioEndEndereco;
 
@@ -15,10 +16,9 @@ namespace SME.Integracao.Serap.Aplicacao
             this.repositorioEndEndereco = repositorioEndEndereco ?? throw new ArgumentNullException(nameof(repositorioEndEndereco));
         }
 
-        public async Task<bool> Handle(InserirEnderecoCommand request, CancellationToken cancellationToken)
+        public async Task<EndEndereco> Handle(InserirEnderecoCommand request, CancellationToken cancellationToken)
         {
-            await repositorioEndEndereco.InserirEndereco(request.Endereco);
-            return true;
+            return (EndEndereco)await repositorioEndEndereco.InserirEndereco(request.Endereco);
         }
     }
 }
