@@ -426,14 +426,16 @@ namespace SME.Integracao.Serap.Dados
 
                 try
                 {
-                    var query = @" DECLARE @ent_id UNIQUEIDENTIFIER, @tua_id_escola UNIQUEIDENTIFIER, @tua_id_setor UNIQUEIDENTIFIER,
+                    var query = @"DECLARE @ent_id UNIQUEIDENTIFIER, @tua_id_escola UNIQUEIDENTIFIER, @tua_id_setor UNIQUEIDENTIFIER,
                                            @tua_id_biblioteca UNIQUEIDENTIFIER
-                                      
+
                                       SET @ent_id = (SELECT ent_id FROM CoreSSO..SYS_Entidade WHERE LOWER(ent_sigla) = 'smesp')
                                       SET @tua_id_escola = (SELECT tua_id FROM CoreSSO..SYS_TipoUnidadeAdministrativa WHERE LOWER(tua_nome) = 'escola')
                                       SET @tua_id_setor = (SELECT tua_id FROM CoreSSO..SYS_TipoUnidadeAdministrativa WHERE LOWER(tua_nome) = 'setor')
                                       SET @tua_id_biblioteca = (SELECT tua_id FROM CoreSSO..SYS_TipoUnidadeAdministrativa WHERE LOWER(tua_nome) = 'Biblioteca')
                                       
+                                        UPDATE CoreSSO..SYS_TipoUnidadeAdministrativa set tua_situacao = 1, tua_dataAlteracao = GETDATE();
+                    
                                       MERGE CoreSSO..SYS_UnidadeAdministrativa _target
                                       USING (SELECT cd_unidade_educacao AS uad_codigo, dc_tipo_unidade_educacao, nm_unidade_educacao AS uad_nome,
                                                     nm_logradouro, cd_nr_endereco, nm_bairro, cd_setor_distrito, nm_micro_regiao AS nm_setor,
@@ -473,13 +475,9 @@ namespace SME.Integracao.Serap.Dados
                                       WHEN NOT MATCHED BY SOURCE AND((_target.tua_id = @tua_id_escola) AND(_target.uad_nome not like 'LAB DRE%'))
                                            THEN
                                            UPDATE SET uad_situacao = 3, uad_dataAlteracao = GETDATE(); ";
-
                     var result = await conn.ExecuteAsync(query);
                 }
-                catch (System.Exception ex)
-                {
-                    throw ex;
-                }
+              
                 finally
                 {
                     conn.Close();
