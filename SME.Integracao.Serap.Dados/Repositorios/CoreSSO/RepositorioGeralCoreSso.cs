@@ -42,5 +42,29 @@ namespace SME.Integracao.Serap.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<ParametrosTipoMeioContatoCoreSsoDto> ObterParametrosTipoMeioContatoCoreSso()
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"DECLARE @tmc_fone UNIQUEIDENTIFIER, @tmc_mail UNIQUEIDENTIFIER, @tua_id UNIQUEIDENTIFIER
+                                select @tmc_fone = tmc_id from SYS_TipoMeioContato where tmc_nome = 'TELEFONE' and tmc_situacao = 1
+                                select @tmc_mail = tmc_id from SYS_TipoMeioContato where tmc_nome = 'E-MAIL' and tmc_situacao = 1
+                                select @tua_id = tua_id from SYS_TipoUnidadeAdministrativa where tua_nome = 'Escola' and tua_situacao = 1
+                                select @tmc_fone TmcFone, @tmc_mail TmcMail, @tua_id TuaId";
+
+                return await conn.QueryFirstOrDefaultAsync<ParametrosTipoMeioContatoCoreSsoDto>(query);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }

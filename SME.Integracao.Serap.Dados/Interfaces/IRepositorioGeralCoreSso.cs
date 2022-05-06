@@ -6,5 +6,6 @@ namespace SME.Integracao.Serap.Dados
     public interface IRepositorioGeralCoreSso
     {
         Task<ParametrosCoreSsoDto> ObterParametrosCoreSso();
+        Task<ParametrosTipoMeioContatoCoreSsoDto> ObterParametrosTipoMeioContatoCoreSso();
     }
 }

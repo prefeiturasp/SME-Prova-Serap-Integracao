@@ -33,6 +33,7 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
                 var novosEnderecos = await TratarEnderecos(unidadesAdministrativasEOL, unidadesAdministrativasCoreSSO);
                 var tempEnderecos = GerarListaTempEnderecos(unidadesAdministrativasEOL, unidadesAdministrativasCoreSSO, novosEnderecos);
                 await TratarUnidadesAdministrativasEnderecos(tempEnderecos);
+                await TratarUnidadesAdministrativasContatos();
 
                 var listaCodigosEol = unidadesAdministrativasEOL.Select(a => a.CodigoUnidadeEducacao).Distinct().ToList();
                 var listaCodigosCoreSSO = unidadesAdministrativasCoreSSO.Select(a => a.Codigo).Distinct().ToList();
@@ -57,10 +58,7 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
 
                     }).ToList();
 
-
-
                     await mediator.Send(new InserirUnidadeAdministrativaEmCascataCommand(uasNovasParaIncluirEntidade));
-
                 }
 
                 return true;
@@ -200,6 +198,66 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
                 var uae = new SysUnidadeAdministrativaEndereco(end.EntId, end.UadId, end.EndId, end.CdNrEndereco, end.ComplementoEndereco);
                 await mediator.Send(new InserirUnidadeAdministrativaEnderecoCommand(uae));
             }
+        }
+
+        private async Task TratarUnidadesAdministrativasContatos()
+        {
+            await mediator.Send(new MergeEolCoreSsoUnidadeAdministrativaContatoCommand());
+
+            var dadosTempDispContato = await mediator.Send(new ObterDadosTempDispContatoQuery());
+            var listaUac = await mediator.Send(new ObterUnidadesAdministrativasContatosQuery());
+
+            var atualizar = ObterListaAtualizar(dadosTempDispContato.ToList(), listaUac.ToList());
+            foreach (SysUnidadeAdministrativaContato uac in atualizar)
+            {
+                await mediator.Send(new AtualizarUnidadeAdministrativaContatoCommand(uac));
+            }
+
+            var inserir = ObterListaInserir(dadosTempDispContato.ToList(), listaUac.ToList());
+            foreach (SysUnidadeAdministrativaContato uac in inserir)
+            {
+                await mediator.Send(new InserirUnidadeAdministrativaContatoCommand(uac));
+            }
+        }
+
+        private List<SysUnidadeAdministrativaContato> ObterListaAtualizar(List<TempDispContatoDto> dadosTempDispContato, List<SysUnidadeAdministrativaContato> listaUac)
+        {
+            var query = from disp in dadosTempDispContato
+                        join uac in listaUac on
+                        new
+                        {
+                            EntId = disp.EntId,
+                            UadId = disp.UadId,
+                            UacId = disp.UacId
+                        }
+                        equals
+                        new
+                        {
+                            EntId = uac.EntId,
+                            UadId = uac.UadId,
+                            UacId = uac.UacId
+                        }
+                        where uac.Situacao == 3 || uac.Contato != disp.UacContato
+                        select new { Uac = uac, Contato = disp.UacContato };
+
+            return (List<SysUnidadeAdministrativaContato>)query.Select(uac => new SysUnidadeAdministrativaContato
+            {
+                EntId = uac.Uac.EntId,
+                UadId = uac.Uac.UadId,
+                UacId = uac.Uac.UacId,
+                TmcId = uac.Uac.TmcId,
+                Contato = uac.Contato,
+            });
+        }
+
+        private List<SysUnidadeAdministrativaContato> ObterListaInserir(List<TempDispContatoDto> dadosTempDispContato, List<SysUnidadeAdministrativaContato> listaUac)
+        {
+            return dadosTempDispContato
+                .Where(disp => !listaUac.Any(uac => uac.EntId == disp.EntId 
+                                                 && uac.UadId == disp.UadId 
+                                                 && uac.UacId == disp.UacId))
+                .Select(disp => 
+                    new SysUnidadeAdministrativaContato(disp.EntId, disp.UadId, disp.TmcId, disp.UacContato)).ToList();
         }
     }
 }

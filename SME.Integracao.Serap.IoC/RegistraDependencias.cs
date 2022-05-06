@@ -18,6 +18,8 @@ namespace SME.Integracao.Serap.IoC
             services.AddScoped<IRepositorioEndEndereco, RepositorioEndEndereco>();
             services.AddScoped<IRepositorioGeralCoreSso, RepositorioGeralCoreSso>();
             services.AddScoped<IRepositorioSysUnidadeAdministrativaEndereco, RepositorioSysUnidadeAdministrativaEndereco>();
+            services.AddScoped<IRepositorioUnidadeAdministrativaContatoEol, RepositorioUnidadeAdministrativaContatoEol>();
+            services.AddScoped<IRepositorioSysUnidadeAdministrativaContato, RepositorioSysUnidadeAdministrativaContato>();
 
             services.AddScoped<ITestCommandUseCase, TestCommandUseCase>();
             services.AddScoped<ITrataSysUnidadeAdministrativaUseCase, TrataSysUnidadeAdministrativaUseCase>();
