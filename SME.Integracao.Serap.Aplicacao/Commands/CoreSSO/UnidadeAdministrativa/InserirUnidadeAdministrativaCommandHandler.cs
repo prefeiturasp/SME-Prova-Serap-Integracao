@@ -18,12 +18,8 @@ namespace SME.Integracao.Serap.Aplicacao
         {
             foreach (var novaUnidadeAdmnistrativa in request.NovasUnidadesAdministrativas)
             {
-                var retornoUnidade = await repositorioSysUnidadeAdministrativa.InserirUnidadeAdministrativa(novaUnidadeAdmnistrativa);
-                return true;
+                await repositorioSysUnidadeAdministrativa.InserirUnidadeAdministrativa(novaUnidadeAdmnistrativa);
             }
-
-            var retorno = await repositorioSysUnidadeAdministrativa.IntegraEnderecoEhContato();
-
             return true;
         }
 

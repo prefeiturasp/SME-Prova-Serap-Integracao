@@ -1,4 +1,5 @@
-﻿using SME.Integracao.Serap.Infra;
+﻿using SME.Integracao.Serap.Dominio;
+using SME.Integracao.Serap.Infra;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,7 +9,7 @@ namespace SME.Integracao.Serap.Dados
 {
     public interface IRepositorioUnidadeAdministrativaContatoEol
     {
-        Task MergeEolCoreSsoUnidadeAdministrativaContato();
+        Task<IEnumerable<TempDispContatoDto>> ObterDadosEmail(ParametrosTipoMeioContatoCoreSsoDto param);
         Task<IEnumerable<TempDispContatoDto>> ObterDadosContatoSecretariaTelefoneFixoVoz(ParametrosTipoMeioContatoCoreSsoDto param);
         Task<IEnumerable<TempDispContatoDto>> ObterDadosContatoTelefoneFixoVoz(ParametrosTipoMeioContatoCoreSsoDto param);
         Task<IEnumerable<TempDispContatoDto>> ObterDadosContatoFax(ParametrosTipoMeioContatoCoreSsoDto param);

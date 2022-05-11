@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace SME.Integracao.Serap.Aplicacao
 {
-    public class ObterDadosTempDispContatoQuery : IRequest<IEnumerable<TempDispContatoDto>>
+    public class ObterDadosContatosQuery : IRequest<IEnumerable<TempDispContatoDto>>
     {
-        public ObterDadosTempDispContatoQuery()
+        public ObterDadosContatosQuery()
         {
 
         }

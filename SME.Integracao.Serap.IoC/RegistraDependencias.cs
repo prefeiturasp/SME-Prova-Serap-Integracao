@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SME.Integracao.Serap.Aplicacao.Interfaces;
-using SME.Integracao.Serap.Aplicacao.UseCase;
+using SME.Integracao.Serap.Aplicacao;
 using SME.Integracao.Serap.Dados;
 using SME.Integracao.Serap.Dados.Mapeamentos;
 
 namespace SME.Integracao.Serap.IoC
 {
-  public  class RegistraDependencias
+    public class RegistraDependencias
     {
         public static void Registrar(IServiceCollection services)
         {
@@ -20,9 +20,16 @@ namespace SME.Integracao.Serap.IoC
             services.AddScoped<IRepositorioSysUnidadeAdministrativaEndereco, RepositorioSysUnidadeAdministrativaEndereco>();
             services.AddScoped<IRepositorioUnidadeAdministrativaContatoEol, RepositorioUnidadeAdministrativaContatoEol>();
             services.AddScoped<IRepositorioSysUnidadeAdministrativaContato, RepositorioSysUnidadeAdministrativaContato>();
+            services.AddScoped<IRepositorioGeralEol, RepositorioGeralEol>();
+            services.AddScoped<IRepositorioDistritoEol, RepositorioDistritoEol>();
+            services.AddScoped<IRepositorioSetorEol, RepositorioSetorEol>();
 
             services.AddScoped<ITestCommandUseCase, TestCommandUseCase>();
             services.AddScoped<ITrataSysUnidadeAdministrativaUseCase, TrataSysUnidadeAdministrativaUseCase>();
+            services.AddScoped<ITratarDistritoUseCase, TratarDistritoUseCase>();
+            services.AddScoped<ITratarSetorUseCase, TratarSetorUseCase>();
+            services.AddScoped<ITratarEnderecoUseCase, TratarEnderecoUseCase>();
+            services.AddScoped<ITratarUnidadeAdministrativaContatoUseCase, TratarUnidadeAdministrativaContatoUseCase>();
 
             RegistrarMapeamentos.Registrar();
 

@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Aplicacao
 {
-    public class ObterDadosTempDispContatoQueryHandler : IRequestHandler<ObterDadosTempDispContatoQuery, IEnumerable<TempDispContatoDto>>
+    public class ObterDadosContatosQueryHandler : IRequestHandler<ObterDadosContatosQuery, IEnumerable<TempDispContatoDto>>
     {
         private readonly IRepositorioGeralCoreSso repositorioGeralCoreSso;
         private readonly IRepositorioUnidadeAdministrativaContatoEol repositorioUacEol;
 
-        public ObterDadosTempDispContatoQueryHandler(IRepositorioGeralCoreSso repositorioGeralCoreSso, IRepositorioUnidadeAdministrativaContatoEol repositorioUacEol)
+        public ObterDadosContatosQueryHandler(IRepositorioGeralCoreSso repositorioGeralCoreSso, IRepositorioUnidadeAdministrativaContatoEol repositorioUacEol)
         {
             this.repositorioGeralCoreSso = repositorioGeralCoreSso ??
                                           throw new ArgumentNullException(nameof(repositorioGeralCoreSso));
@@ -22,11 +22,14 @@ namespace SME.Integracao.Serap.Aplicacao
                               throw new ArgumentNullException(nameof(repositorioUacEol));
         }
 
-        public async Task<IEnumerable<TempDispContatoDto>> Handle(ObterDadosTempDispContatoQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TempDispContatoDto>> Handle(ObterDadosContatosQuery request, CancellationToken cancellationToken)
         {
             var listaRetorno = new List<TempDispContatoDto>();
 
             var param = await repositorioGeralCoreSso.ObterParametrosTipoMeioContatoCoreSso();
+
+            var contatosEmail = await repositorioUacEol.ObterDadosEmail(param);
+            listaRetorno = IncluirContatosListaRetorno(listaRetorno, contatosEmail);
 
             var contatosSecretariaTelefoneFixoVoz = await repositorioUacEol.ObterDadosContatoSecretariaTelefoneFixoVoz(param);
             listaRetorno = IncluirContatosListaRetorno(listaRetorno, contatosSecretariaTelefoneFixoVoz);
