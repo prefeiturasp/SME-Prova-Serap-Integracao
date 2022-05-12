@@ -8,5 +8,6 @@ namespace SME.Integracao.Serap.Dados
     {
         Task<object> InserirEndereco(EndEndereco endereco);
         Task AtualizarEndereco(EndEndereco endereco);
+        Task<IEnumerable<EndEndereco>> ObterEnderecosCoreSso();
     }
 }

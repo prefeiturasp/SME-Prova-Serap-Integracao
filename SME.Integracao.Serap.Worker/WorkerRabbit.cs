@@ -37,8 +37,8 @@ namespace SME.Integracao.Serap.Worker
             this.rabbitOptions = rabbitOptions ?? throw new ArgumentNullException(nameof(rabbitOptions));
             this.serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
 
-           //this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
-           // this.telemetriaOptions = telemetriaOptions ?? throw new ArgumentNullException(nameof(telemetriaOptions));
+            //this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
+            // this.telemetriaOptions = telemetriaOptions ?? throw new ArgumentNullException(nameof(telemetriaOptions));
 
             this.connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
@@ -82,15 +82,18 @@ namespace SME.Integracao.Serap.Worker
                 var filaDeadLetter = $"{fila}.deadletter";
                 channel.QueueDeclare(filaDeadLetter, true, false, false, null);
                 channel.QueueBind(filaDeadLetter, ExchangeRabbit.IntegracaoSerapDeadLetter, fila, null);
-              
+
             }
 
         }
 
         private void RegistrarUseCases()
         {
+            comandos.Add(RotasRabbit.SysUnidadeAdministrativaEnderecoEndEndereco, new ComandoRabbit("SincronizaçãoEndereços", typeof(ITratarEnderecoUseCase)));
+            comandos.Add(RotasRabbit.SysUnidadeAdministrativaContato, new ComandoRabbit("SincronizaçãoContatos", typeof(ITratarUnidadeAdministrativaContatoUseCase)));
+            comandos.Add(RotasRabbit.Distrito, new ComandoRabbit("SincronizaçãoDistritos", typeof(ITratarDistritoUseCase)));
+            comandos.Add(RotasRabbit.Setor, new ComandoRabbit("SincronizaçãoSetores", typeof(ITratarSetorUseCase)));
             comandos.Add(RotasRabbit.SysUnidadeAdministrativa, new ComandoRabbit("SincronizaçãoUnidades", typeof(ITrataSysUnidadeAdministrativaUseCase)));
-        
         }
 
         private MethodInfo ObterMetodo(Type objType, string method)
@@ -123,7 +126,7 @@ namespace SME.Integracao.Serap.Worker
                 catch (Exception ex)
                 {
                     await mediator.Send(new SalvarLogViaRabbitCommand($"Erro ao tratar mensagem {ea.DeliveryTag}", ex.Message));
-               
+
                     channel.BasicReject(ea.DeliveryTag, false);
                 }
             };
@@ -162,7 +165,7 @@ namespace SME.Integracao.Serap.Worker
                     var casoDeUso = scope.ServiceProvider.GetService(comandoRabbit.TipoCasoUso);
 
                     await ObterMetodo(comandoRabbit.TipoCasoUso, "Executar").InvokeAsync(casoDeUso, new object[] { mensagemRabbit });
-                                              
+
                     channel.BasicAck(ea.DeliveryTag, false);
                 }
                 catch (Exception ex)
@@ -181,7 +184,7 @@ namespace SME.Integracao.Serap.Worker
         {
             var mensagem = $"ERRO WORKER INTEGRACAO - {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)} - ERRO - {ea.RoutingKey}";
 
-             await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, observacao, rastreamento: ex?.StackTrace, excecaoInterna: ex.InnerException?.Message));
+            await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, observacao, rastreamento: ex?.StackTrace, excecaoInterna: ex.InnerException?.Message));
         }
 
     }

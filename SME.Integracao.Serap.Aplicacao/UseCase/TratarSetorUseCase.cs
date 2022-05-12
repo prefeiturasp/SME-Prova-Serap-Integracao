@@ -35,6 +35,8 @@ namespace SME.Integracao.Serap.Aplicacao
 
                 await mediator.Send(new InserirUnidadeAdministrativaEmCascataCommand(listaInserir));
 
+                await mediator.Send(new PublicaFilaRabbitCommand(RotasRabbit.SysUnidadeAdministrativa));
+
                 return true;
             }
             catch (Exception ex)

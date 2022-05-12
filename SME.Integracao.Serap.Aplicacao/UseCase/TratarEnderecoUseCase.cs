@@ -31,6 +31,8 @@ namespace SME.Integracao.Serap.Aplicacao
                 var tempEnderecos = GerarListaTempEnderecos(unidadesAdministrativasEOL, unidadesAdministrativasCoreSSO, novosEnderecos);
                 await TratarUnidadesAdministrativasEnderecos(tempEnderecos);
 
+                await mediator.Send(new PublicaFilaRabbitCommand(RotasRabbit.SysUnidadeAdministrativaContato));
+
                 return true;
             }
             catch (Exception ex)
@@ -39,24 +41,38 @@ namespace SME.Integracao.Serap.Aplicacao
                 await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, $"Erros: {ex.Message}", rastreamento: ex?.StackTrace, excecaoInterna: ex.InnerException?.Message));
                 return false;
             }
-        }        
+        }
 
         private async Task<List<EndEndereco>> TratarEnderecos(IEnumerable<UnidadeEducacaoDadosGeraisDto> unidadesAdministrativasEOL, IEnumerable<SysUnidadeAdministrativa> unidadesAdministrativasCoreSSO)
         {
-            var enderecosUnidadesParaAlterar = unidadesAdministrativasEOL
+            var enderecosFiltro = unidadesAdministrativasEOL
                                 .Where(eol => unidadesAdministrativasCoreSSO.Any(core => core.EntidadeId == eol.EntId
                                                                                       && core.TuaId == eol.TuaIdEscola
-                                                                                      && core.Codigo == eol.CodigoUnidadeEducacao));
+                                                                                      && core.Codigo == eol.CodigoUnidadeEducacao
+                                                                                      && !string.IsNullOrEmpty(eol.CodigoCep))).Distinct();
+
+            var enderecosCoreSso = await mediator.Send(new ObterEnderecosCoreSsoQuery());
+
+            var enderecosUnidadesParaAlterar = enderecosFiltro
+                .Where(e => enderecosCoreSso.Any(ec => ec.Cep == e.CodigoCep
+                                                    && ec.Logradouro == e.NomeLogradouro
+                                                    && ec.Bairro == e.NomeBairro
+                                                    && ec.Distrito == e.NomeDistritoMec
+                                                    && ec.CidId == parametrosCoreSso.CidIdSaoPaulo));
+
             var enderecosParaAlterar = MapearParaEndereco(enderecosUnidadesParaAlterar);
             foreach (EndEndereco endereco in enderecosParaAlterar)
             {
                 await mediator.Send(new AtualizarEnderecoCommand(endereco));
             }
 
-            var enderecosUnidadesParaInserir = unidadesAdministrativasEOL
-                .Where(eol => !unidadesAdministrativasCoreSSO.Any(core => core.EntidadeId == eol.EntId
-                                                                      && core.TuaId == eol.TuaIdEscola
-                                                                      && core.Codigo == eol.CodigoUnidadeEducacao));
+            var enderecosUnidadesParaInserir = enderecosFiltro
+                .Where(e => !enderecosCoreSso.Any(ec => ec.Cep == e.CodigoCep
+                                                    && ec.Logradouro == e.NomeLogradouro
+                                                    && ec.Bairro == e.NomeBairro
+                                                    && ec.Distrito == e.NomeDistritoMec
+                                                    && ec.CidId == parametrosCoreSso.CidIdSaoPaulo));
+
             var enderecosParaInserir = MapearParaEndereco(enderecosUnidadesParaInserir);
             foreach (EndEndereco endereco in enderecosParaInserir)
             {
@@ -66,7 +82,6 @@ namespace SME.Integracao.Serap.Aplicacao
                                                                  && end.Distrito == endereco.Distrito).Count();
                 endereco.Integridade = integridade;
                 var novoEndereco = await mediator.Send(new InserirEnderecoCommand(endereco));
-                endereco.Id = novoEndereco.Id;
             }
 
             return enderecosParaInserir;

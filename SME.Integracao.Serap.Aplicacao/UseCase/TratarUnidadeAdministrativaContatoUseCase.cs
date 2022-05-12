@@ -24,6 +24,7 @@ namespace SME.Integracao.Serap.Aplicacao
             try
             {
                 await TratarUnidadesAdministrativasContatos();
+                await mediator.Send(new PublicaFilaRabbitCommand(RotasRabbit.Distrito));
                 return true;
             }
             catch (Exception ex)

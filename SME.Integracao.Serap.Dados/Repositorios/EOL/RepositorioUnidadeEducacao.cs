@@ -2,6 +2,7 @@
 using SME.Integracao.Serap.Infra;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace SME.Integracao.Serap.Dados
 {
@@ -12,7 +13,6 @@ namespace SME.Integracao.Serap.Dados
 
         }
 
-
         public async Task<IEnumerable<UnidadeEducacaoDadosGeraisDto>> BuscaUnidadeEducacaoDadosGerais()
         {
 
@@ -22,7 +22,7 @@ namespace SME.Integracao.Serap.Dados
             {
                 string linkedServerSME = ObterLinkedServerSME();
 
-                var query = @"SELECT top (1000)
+                var query = $@"SELECT top (1000)
                             		cast(cd_unidade_educacao as varchar(6)) as				 CodigoUnidadeEducacao      
                             		, cast(dc_tipo_unidade_educacao as varchar(25)) as		 DescricaoTipoUnidadeEducacao
                             		, cast(sg_tp_escola as varchar(12)) as					 SiglaTipoEscola            
@@ -85,9 +85,10 @@ namespace SME.Integracao.Serap.Dados
                               		, cd_unidade_administrativa_referencia
                               ";
 
-                return await conn.QueryAsync<UnidadeEducacaoDadosGeraisDto>(query, new { linkedServerSME }, commandTimeout: 600);
+                query = query.Replace("@linkedServerSME", linkedServerSME);
+                return await conn.QueryAsync<UnidadeEducacaoDadosGeraisDto>(query, commandTimeout: 600);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }

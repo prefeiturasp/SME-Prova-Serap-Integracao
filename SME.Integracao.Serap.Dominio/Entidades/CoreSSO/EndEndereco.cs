@@ -12,6 +12,7 @@ namespace SME.Integracao.Serap.Dominio
         public EndEndereco(string cep, string logradouro, string bairro, string distrito,
             int? zona, Guid cidId, int situacao, DateTime dataCriacao, DateTime dataAlteracao, int integridade)
         {
+            Id = Guid.NewGuid();
             Cep = cep;
             Logradouro = logradouro;
             Bairro = bairro;

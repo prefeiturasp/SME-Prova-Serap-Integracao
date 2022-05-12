@@ -45,7 +45,6 @@ namespace SME.Integracao.Serap.Dados
 								new
 								{
 									linkedServerSME,
-									tmc_fone = param.TmcFone,
 									tmc_mail = param.TmcMail,
 									tua_id = param.TuaId
 								},
@@ -92,7 +91,6 @@ namespace SME.Integracao.Serap.Dados
 								new { 
 										linkedServerSME,
 										tmc_fone = param.TmcFone,
-										tmc_mail = param.TmcMail,
 										tua_id = param.TuaId
 									},
 								commandTimeout: 600);
@@ -138,7 +136,6 @@ namespace SME.Integracao.Serap.Dados
 								{
 									linkedServerSME,
 									tmc_fone = param.TmcFone,
-									tmc_mail = param.TmcMail,
 									tua_id = param.TuaId
 								},
 								commandTimeout: 600);
@@ -184,7 +181,6 @@ namespace SME.Integracao.Serap.Dados
 								{
 									linkedServerSME,
 									tmc_fone = param.TmcFone,
-									tmc_mail = param.TmcMail,
 									tua_id = param.TuaId
 								},
 								commandTimeout: 600);
@@ -230,7 +226,6 @@ namespace SME.Integracao.Serap.Dados
 								{
 									linkedServerSME,
 									tmc_fone = param.TmcFone,
-									tmc_mail = param.TmcMail,
 									tua_id = param.TuaId
 								},
 								commandTimeout: 600);
@@ -276,7 +271,6 @@ namespace SME.Integracao.Serap.Dados
 								{
 									linkedServerSME,
 									tmc_fone = param.TmcFone,
-									tmc_mail = param.TmcMail,
 									tua_id = param.TuaId
 								},
 								commandTimeout: 600);
