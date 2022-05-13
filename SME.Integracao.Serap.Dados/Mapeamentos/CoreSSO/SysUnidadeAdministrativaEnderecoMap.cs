@@ -10,7 +10,7 @@ namespace SME.Integracao.Serap.Dados.Mapeamentos
             ToTable("SYS_UnidadeAdministrativaEndereco");
             Map(c => c.EntId).ToColumn("ent_id");
             Map(c => c.UadId).ToColumn("uad_id");
-            Map(c => c.UaeId).ToColumn("uae_id");
+            Map(c => c.UaeId).ToColumn("uae_id").IsKey();
             Map(c => c.EndId).ToColumn("end_id");
             Map(c => c.Numero).ToColumn("uae_numero");
             Map(c => c.Complemento).ToColumn("uae_complemento");

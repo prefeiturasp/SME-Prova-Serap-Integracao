@@ -2,8 +2,6 @@
 using SME.Integracao.Serap.Dominio;
 using SME.Integracao.Serap.Infra;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System;
 
@@ -42,7 +40,7 @@ namespace SME.Integracao.Serap.Dados
             try
             {
                 var query = @"update END_Endereco set end_dataAlteracao = GETDATE(), end_cep = @Cep
-                                where end_cep = @Cep
+                                where right('00000000' + CONVERT(VARCHAR(8), end_cep),8) = @Cep
                                       and end_logradouro = @Logradouro
                                       and end_bairro = @Bairro
                                       and end_distrito = @Distrito;";

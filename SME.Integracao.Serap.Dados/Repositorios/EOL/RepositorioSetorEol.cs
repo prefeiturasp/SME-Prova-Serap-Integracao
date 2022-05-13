@@ -27,6 +27,7 @@ namespace SME.Integracao.Serap.Dados
 				query.AppendLine(QueriesSetor.GerarTabelasTemporarias());
 				query.AppendLine(QueriesSetor.ObterDadosParaInserirAlterar());
 
+				query = query.Replace("@linkedServerSME", linkedServerSME);
 				return await conn.QueryAsync<DadosSetorDto>(query.ToString(),
 								new
 								{

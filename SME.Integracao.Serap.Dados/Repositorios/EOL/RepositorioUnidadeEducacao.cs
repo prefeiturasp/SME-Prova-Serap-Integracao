@@ -16,7 +16,6 @@ namespace SME.Integracao.Serap.Dados
         public async Task<IEnumerable<UnidadeEducacaoDadosGeraisDto>> BuscaUnidadeEducacaoDadosGerais()
         {
 
-
             using var conn = ObterConexao();
             try
             {

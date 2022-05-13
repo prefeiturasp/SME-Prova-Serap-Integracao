@@ -41,6 +41,7 @@ namespace SME.Integracao.Serap.Dados
 								where ord_dispositivo = 1
 							";
 
+				query = query.Replace("@linkedServerSME", linkedServerSME);
 				return await conn.QueryAsync<TempDispContatoDto>(query,
 								new
 								{
@@ -86,7 +87,8 @@ namespace SME.Integracao.Serap.Dados
 										   and dcu.dc_tipo_dispositivo_comunicacao = 'TELEFONE FIXO DE VOZ'
 										   and dcu.nm_contato IN ('secretária', 'secretaria')) dados
 								 where ord_dispositivo = 1";
-				
+
+				query = query.Replace("@linkedServerSME", linkedServerSME);
 				return await conn.QueryAsync<TempDispContatoDto>(query, 
 								new { 
 										linkedServerSME,
@@ -131,6 +133,7 @@ namespace SME.Integracao.Serap.Dados
 										   and dcu.dc_tipo_dispositivo_comunicacao = 'TELEFONE FIXO DE VOZ') dados
 								 where ord_dispositivo = 1";
 
+				query = query.Replace("@linkedServerSME", linkedServerSME);
 				return await conn.QueryAsync<TempDispContatoDto>(query,
 								new
 								{
@@ -176,6 +179,7 @@ namespace SME.Integracao.Serap.Dados
 										   and dcu.dc_tipo_dispositivo_comunicacao = 'FAX') dados
 								 where ord_dispositivo = 1;";
 
+				query = query.Replace("@linkedServerSME", linkedServerSME);
 				return await conn.QueryAsync<TempDispContatoDto>(query,
 								new
 								{
@@ -221,6 +225,7 @@ namespace SME.Integracao.Serap.Dados
 										   and dcu.dc_tipo_dispositivo_comunicacao = 'PABX') dados
 								 where ord_dispositivo = 1;";
 
+				query = query.Replace("@linkedServerSME", linkedServerSME);
 				return await conn.QueryAsync<TempDispContatoDto>(query,
 								new
 								{
@@ -266,6 +271,7 @@ namespace SME.Integracao.Serap.Dados
 										   and dcu.dc_tipo_dispositivo_comunicacao = 'PUBLICO') dados
 								 where ord_dispositivo = 1;";
 
+				query = query.Replace("@linkedServerSME", linkedServerSME);
 				return await conn.QueryAsync<TempDispContatoDto>(query,
 								new
 								{
