@@ -91,8 +91,22 @@ namespace SME.Integracao.Serap.Aplicacao
 
         private List<TempEnderecoDto> GerarListaTempEnderecos(List<EndEndereco> novosEnderecos)
         {
+
+            var uadEol = from eol in unidadesAdministrativasEOL
+                         select new
+                         {
+                             NomeLogradouro = eol.NomeLogradouro,
+                             CodigoCep = eol.CodigoCep,
+                             NomeBairro = eol.NomeBairro,
+                             NomeDistritoMec = eol.NomeDistritoMec,
+                             CodigoUnidadeEducacao = eol.CodigoUnidadeEducacao,
+                             CodigoNrEndereco = eol.CodigoNrEndereco,
+                             DescricaoComplementoEndereco = eol.DescricaoComplementoEndereco
+                         };
+            uadEol = uadEol.Distinct();
+
             var query = from core in unidadesAdministrativasCoreSSO
-                        join eol in unidadesAdministrativasEOL on
+                        join eol in uadEol on
                         new
                         {
                             Codigo = core.Codigo
@@ -142,12 +156,23 @@ namespace SME.Integracao.Serap.Aplicacao
                     CdNrEndereco = te.CdNrEndereco,
                     ComplementoEndereco = te.ComplementoEndereco,
                     Logradouro = te.Logradouro
-                }).Distinct().ToList();
+                }).ToList();
         }
 
         private List<EndEndereco> MapearParaEndereco(IEnumerable<UnidadeEducacaoDadosGeraisDto> unidadesEducacao)
         {
-            return unidadesEducacao.Select(x =>
+            var query = from end in unidadesEducacao
+                        select new
+                        {
+                            CodigoCep = end.CodigoCep,
+                            NomeLogradouro = end.NomeLogradouro,
+                            NomeBairro = end.NomeBairro,
+                            NomeDistritoMec = end.NomeDistritoMec
+                        };
+
+            query = query.Distinct();
+
+            return query.Select(x =>
                 new EndEndereco(
                                     x.CodigoCep,
                                     x.NomeLogradouro,
@@ -160,7 +185,7 @@ namespace SME.Integracao.Serap.Aplicacao
                                     DateTime.Now,
                                     1
                                )
-            ).ToList();
+                    ).ToList();
         }
 
         private async Task TratarUnidadesAdministrativasEnderecos(List<TempEnderecoDto> tempEnderecos)

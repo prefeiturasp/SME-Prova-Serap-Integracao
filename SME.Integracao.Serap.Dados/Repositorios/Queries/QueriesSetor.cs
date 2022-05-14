@@ -69,7 +69,7 @@ namespace SME.Integracao.Serap.Dados
 							ent_id EntId, uad_situacao Situacao, v_setor.cd_endereco_grh CodigoEnderecoGrh
 							FROM tmp_distrito_setor
 						inner join v_unidade_educacao_dados_gerais v_setor
-						ON tmp_distrito_setor.cd_setor = v_setor.cd_unidade_educacao
+						ON RIGHT('000000' + CONVERT(VARCHAR(6), tmp_distrito_setor.cd_setor), 6) = v_setor.cd_unidade_educacao
 					";
 		}
 	}

@@ -21,7 +21,7 @@ namespace SME.Integracao.Serap.Dados
             {
                 string linkedServerSME = ObterLinkedServerSME();
 
-                var query = $@"SELECT top (1000)
+                var query = $@"SELECT
                             		cast(cd_unidade_educacao as varchar(6)) as				 CodigoUnidadeEducacao      
                             		, cast(dc_tipo_unidade_educacao as varchar(25)) as		 DescricaoTipoUnidadeEducacao
                             		, cast(sg_tp_escola as varchar(12)) as					 SiglaTipoEscola            

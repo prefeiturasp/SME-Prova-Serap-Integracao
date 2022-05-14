@@ -84,7 +84,21 @@ namespace SME.Integracao.Serap.Aplicacao
                             CodigoInep = uad.CodigoInep,
                         };
 
-            return (List<SysUnidadeAdministrativa>)query;
+            return query.Select(x => new SysUnidadeAdministrativa 
+            {                
+                EntidadeId = x.EntidadeId,
+                TuaId = x.TuaId,
+                Codigo = x.Codigo,
+                Nome = x.Nome,
+                Sigla = x.Sigla,
+                SuperiorId = x.SuperiorId,
+                Situacao = x.Situacao,
+                DataCriacao = x.DataCriacao,
+                DataAlteracao = x.DataAlteracao,
+                Integridade = x.Integridade,
+                CodigoIntegracao = x.CodigoIntegracao,
+                CodigoInep = x.CodigoInep
+            }).ToList();
         }
 
         public List<SysUnidadeAdministrativa> ObterListaInserir(IEnumerable<DadosSetorDto> dadosSetores, IEnumerable<SysUnidadeAdministrativa> unidadesAdministrativas)
@@ -95,9 +109,23 @@ namespace SME.Integracao.Serap.Aplicacao
                                                                                     && x.UadIdDistrito == uad.SuperiorId
                                                                                     && x.CodigoSetor == uad.Codigo));
 
-            return filtro.Select(x =>
+            var query = from setores in filtro
+                        select new
+                        {
+                            EntId = setores.EntId,
+                            TuaIdSetor = setores.TuaIdSetor,
+                            CodigoSetor = setores.CodigoSetor,
+                            NomeSetor = setores.NomeSetor,
+                            UadIdDistrito = setores.UadIdDistrito,
+                            CodigoEnderecoGrh = setores.CodigoEnderecoGrh
+                        };
+
+            query = query.Distinct();
+
+            return query.Select(x =>
                             new SysUnidadeAdministrativa
                             {
+                                Id = Guid.NewGuid(),
                                 EntidadeId = x.EntId,
                                 TuaId = x.TuaIdSetor,
                                 Codigo = x.CodigoSetor,

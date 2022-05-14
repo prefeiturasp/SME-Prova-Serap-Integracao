@@ -37,6 +37,7 @@ namespace SME.Integracao.Serap.Aplicacao
 
                     var uasNovasParaIncluirEntidade = uasNovasParaIncluir.Select(a => new SysUnidadeAdministrativa()
                     {
+                        Id = Guid.NewGuid(),
                         Codigo = a.CodigoUnidadeEducacao,
                         CodigoIntegracao = a.CodigoNrEndereco,
                         EntidadeId = parametrosCoreSso.EntIdSmeSp,

@@ -7,12 +7,11 @@ namespace SME.Integracao.Serap.Dados
         internal static string CriarTmpCoreSMEUnidadeEducacaoDadosGerais()
         {
             return @"
-                				IF EXISTS ( SELECT  *
+                	IF EXISTS ( SELECT  *
 							FROM    sys.objects
 							WHERE   object_id = OBJECT_ID(N'[dbo].[tmp_CoreSME_unidade_educacao_dados_gerais]')
 									AND type IN ( N'U' ) ) 
 					DROP TABLE [dbo].[tmp_CoreSME_unidade_educacao_dados_gerais]
-				GO
 
 				CREATE TABLE [dbo].[tmp_CoreSME_unidade_educacao_dados_gerais]
 					(
@@ -165,7 +164,6 @@ namespace SME.Integracao.Serap.Dados
 							WHERE   object_id = OBJECT_ID(N'[dbo].[tmp_CoreSME_unidade_educacao_dados_gerais]')
 									AND type IN ( N'U' ) ) 
 						DROP TABLE [dbo].[tmp_CoreSME_unidade_educacao_dados_gerais]
-						GO
 				";
 		}		
 	}

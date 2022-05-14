@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace SME.Integracao.Serap.Aplicacao
 {
     public class TratarDistritoUseCase : ITratarDistritoUseCase
@@ -50,7 +49,7 @@ namespace SME.Integracao.Serap.Aplicacao
         }
 
         public List<SysUnidadeAdministrativa> ObterListaAtualizar(IEnumerable<DadosDistritoDto> dadosDistritos, IEnumerable<SysUnidadeAdministrativa> unidadesAdministrativas)
-        {            
+        {
 
             var query = from distrito in dadosDistritos
                         join uad in unidadesAdministrativas on
@@ -86,7 +85,21 @@ namespace SME.Integracao.Serap.Aplicacao
                             CodigoInep = uad.CodigoInep,
                         };
 
-            return (List<SysUnidadeAdministrativa>)query;
+            return query.Select(x => new SysUnidadeAdministrativa
+            {
+                EntidadeId = x.EntidadeId,
+                TuaId = x.TuaId,
+                Codigo = x.Codigo,
+                Nome = x.Nome,
+                Sigla = x.Sigla,
+                SuperiorId = x.SuperiorId,
+                Situacao = x.Situacao,
+                DataCriacao = x.DataCriacao,
+                DataAlteracao = x.DataAlteracao,
+                Integridade = x.Integridade,
+                CodigoIntegracao = x.CodigoIntegracao,
+                CodigoInep = x.CodigoInep
+            }).ToList();
         }
 
         public List<SysUnidadeAdministrativa> ObterListaInserir(IEnumerable<DadosDistritoDto> dadosDistritos, IEnumerable<SysUnidadeAdministrativa> unidadesAdministrativas)
@@ -100,6 +113,7 @@ namespace SME.Integracao.Serap.Aplicacao
             return filtro.Select(x =>
                             new SysUnidadeAdministrativa
                             {
+                                Id = Guid.NewGuid(),
                                 EntidadeId = x.EntId,
                                 TuaId = x.TuaIdDistrito,
                                 Codigo = x.CodigoDistrito,
