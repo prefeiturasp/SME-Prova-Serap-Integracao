@@ -90,7 +90,7 @@ namespace SME.Integracao.Serap.Worker
         private void RegistrarUseCases()
         {
             comandos.Add(RotasRabbit.SysUnidadeAdministrativa, new ComandoRabbit("SincronizaçãoUnidades", typeof(ITrataSysUnidadeAdministrativaUseCase)));
-        
+            comandos.Add(RotasRabbit.EscEscola, new ComandoRabbit("SincronizacaoEScolas", typeof(ITrataEscolaUseCase)));
         }
 
         private MethodInfo ObterMetodo(Type objType, string method)

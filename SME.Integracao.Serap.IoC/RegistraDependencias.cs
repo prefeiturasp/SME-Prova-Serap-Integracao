@@ -20,8 +20,12 @@ namespace SME.Integracao.Serap.IoC
             services.AdicionarValidadoresFluentValidation();
             services.AddScoped<IRepositorioSysUnidadeAdministrativa, RepositorioSysUnidadeAdministrativa>();
             services.AddScoped<IRepositorioUnidadeEducacao, RepositorioUnidadeEducacao>();
+            services.AddScoped<IRepositorioEscEscola, RepositorioEscEscola>();
+
+
             services.AddScoped<ITestCommandUseCase, TestCommandUseCase>();
             services.AddScoped<ITrataSysUnidadeAdministrativaUseCase, TrataSysUnidadeAdministrativaUseCase>();
+            services.AddScoped<ITrataEscolaUseCase, TrataEscolaUseCase>();
 
             RegistrarMapeamentos.Registrar();
 

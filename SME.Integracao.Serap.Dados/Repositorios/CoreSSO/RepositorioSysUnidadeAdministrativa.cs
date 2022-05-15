@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using SME.Integracao.Serap.Dominio;
 using SME.Integracao.Serap.Infra;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -467,6 +468,30 @@ namespace SME.Integracao.Serap.Dados
                     conn.Close();
                     conn.Dispose();
                 }
+            }
+        }
+
+
+        public async Task<Guid> BuscaUadIdSuperiorGestao(EscEscola escola)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"SELECT uad_idSuperiorGestao as   UadIdSuperiorGestao
+                               FROM[GestaoAvaliacao_SGP].[dbo].[ESC_Escola]";
+
+
+
+                return await conn.QueryFirstOrDefaultAsync<Guid>(query, commandTimeout: 600);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
             }
         }
     }
