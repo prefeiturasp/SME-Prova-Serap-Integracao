@@ -8,9 +8,9 @@ namespace SME.Integracao.Serap.Dados.Mapeamentos
     {
         public SysUnidadeAdministrativaMap()
         {
-            ToTable("SysUnidadeAdministrativa");
+            ToTable("SYS_UnidadeAdministrativa");
             Map(c => c.EntidadeId).ToColumn("ent_id");
-            Map(c => c.Id).ToColumn("Id").IsKey();
+            Map(c => c.Id).ToColumn("uad_id").IsKey();
             Map(c => c.TuaId).ToColumn("tua_id");
             Map(c => c.Codigo).ToColumn("uad_codigo");
             Map(c => c.Nome).ToColumn("uad_nome");

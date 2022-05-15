@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SME.Integracao.Serap.Aplicacao.UseCase
+namespace SME.Integracao.Serap.Aplicacao
 {
     public class TestCommandUseCase : ITestCommandUseCase
     {

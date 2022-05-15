@@ -3,8 +3,6 @@ using SME.Integracao.Serap.Dominio;
 using SME.Integracao.Serap.Infra;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Dados
@@ -25,7 +23,7 @@ namespace SME.Integracao.Serap.Dados
                 return await conn.InsertAsync(novaUnidadeAdministrativa);
             }
 
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -59,35 +57,7 @@ namespace SME.Integracao.Serap.Dados
             }
 
         }
-
-        public async Task<int> IntegraEnderecoEhContato()
-        {
-            using var conn = ObterConexao();
-            {
-                try
-                {
-                    using (var command = new SqlCommand("ProcedureName", (SqlConnection)conn)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    })
-                    {
-                        conn.Open();
-                        var retorno = command.ExecuteNonQuery();
-                        return retorno;
-                    }
-                }
-
-                catch (System.Exception ex)
-                {
-                    throw ex;
-                }
-                finally
-                {
-                    conn.Close();
-                    conn.Dispose();
-                }
-            }
-        }
+        
         public async Task CriaTipoUnidadeAdministrativas()
         {
             using var conn = ObterConexao();
@@ -128,14 +98,7 @@ namespace SME.Integracao.Serap.Dados
                 conn.Close();
                 conn.Dispose();
             }
-        }
-
-
-        public async Task CarregaTempEscola()
-
-        {
-
-        }
+        }        
 
         public async Task<IEnumerable<SysUnidadeAdministrativa>> CarregaSysUnidadeAdministrativas()
         {
@@ -163,9 +126,9 @@ namespace SME.Integracao.Serap.Dados
                 return await conn.QueryAsync<SysUnidadeAdministrativa>(query);
 
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
 
             finally
@@ -468,6 +431,44 @@ namespace SME.Integracao.Serap.Dados
                     conn.Close();
                     conn.Dispose();
                 }
+            }
+        }
+
+        public async Task AtualizarDistritoSetor(SysUnidadeAdministrativa distritoSetor)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"update SYS_UnidadeAdministrativa
+								set uad_nome = @Nome,
+									uad_dataAlteracao = GETDATE(),
+									uad_idSuperior = @SuperiorId,
+									uad_codigoIntegracao = @CodigoIntegracao
+								where ent_id = @EntidadeId
+								    and uad_codigo = @Codigo
+								    and uad_idSuperior = @SuperiorId
+								    and tua_id = @TuaId";
+
+                var result = await conn.ExecuteAsync(query,
+                    new
+                    {
+                        distritoSetor.EntidadeId,
+                        distritoSetor.Codigo,
+                        distritoSetor.SuperiorId,
+                        distritoSetor.TuaId,
+                        distritoSetor.Nome,
+                        distritoSetor.CodigoIntegracao
+                    },
+                    commandTimeout: 600);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
             }
         }
 

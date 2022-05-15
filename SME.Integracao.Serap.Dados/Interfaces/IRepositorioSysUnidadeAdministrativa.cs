@@ -12,7 +12,7 @@ namespace SME.Integracao.Serap.Dados
 
         Task<object> InserirUnidadeAdministrativa(SysUnidadeAdministrativa novaUnidadeAdministrativa);
 
-        Task<int> IntegraEnderecoEhContato();
+        Task AtualizarDistritoSetor(SysUnidadeAdministrativa distritoSetor);
 
     }
 }
