@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Aplicacao.Commands
 {
-    public class InserirEscEscolaCommandHandler : IRequestHandler<InserirEscEscolaCommand, EscEscola>
+    public class InserirEscEscolaCommandHandler : IRequestHandler<InserirEscEscolaCommand, object>
     {
         private readonly IRepositorioEscEscola repositorioEscEscola;
 
@@ -18,11 +18,9 @@ namespace SME.Integracao.Serap.Aplicacao.Commands
             this.repositorioEscEscola = repositorioEscEscola ?? throw new ArgumentNullException(nameof(repositorioEscEscola));
         }
 
-        public async Task<EscEscola> Handle(InserirEnderecoCommand request, CancellationToken cancellationToken)
+        public async Task<object> Handle(InserirEscEscolaCommand request, CancellationToken cancellationToken)
         {
-            return (EndEndereco)await repositorioEscEscola.InserirEndereco(request.Endereco);
-
-
+            return await repositorioEscEscola.InserirEscola(request.Escola);
         }
     }
 }

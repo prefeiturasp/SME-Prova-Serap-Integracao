@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Aplicacao.UseCase
 {
-   public class TrataEscolaUseCase : ITrataEscolaUseCase
+    public class TrataEscolaUseCase : ITrataEscolaUseCase
     {
         private readonly IMediator mediator;
 
@@ -26,7 +26,7 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
             var escolasEolCore = await mediator.Send(new BuscaEscolasEolCoreQuery());
             var unidadesAdministrativasCoreSSO = await mediator.Send(new BuscaUnidadesAdministrativasCoreSSOQuery());
 
-            var listaCodigoEscolasCoresso = escolasEolCore.Select(a => a.UadCodigo).Distinct().ToList();  
+            var listaCodigoEscolasCoresso = escolasEolCore.Select(a => a.UadCodigo).Distinct().ToList();
 
             var listaCodigosEscolasSerap = escolasSerap.Select(a => a.EscCodigo).Distinct().ToList();
 
@@ -47,11 +47,11 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
                     UadIdSuperiorGestao = a.UadIdSuperior
                 }).ToList();
 
+            }
+
+            return true;
 
 
-                return true;
-
-        }
 
             // Busca V_unidadeEducacaodadosGerais
             // Busca sysUnidade administratica com tipo escola e situcao = 1
@@ -61,4 +61,5 @@ namespace SME.Integracao.Serap.Aplicacao.UseCase
             // atualiza registro antigo
             // exclui se necessário
         }
+    }
 }
