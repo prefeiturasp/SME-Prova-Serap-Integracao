@@ -94,6 +94,7 @@ namespace SME.Integracao.Serap.Worker
             comandos.Add(RotasRabbit.Distrito, new ComandoRabbit("SincronizaçãoDistritos", typeof(ITratarDistritoUseCase)));
             comandos.Add(RotasRabbit.Setor, new ComandoRabbit("SincronizaçãoSetores", typeof(ITratarSetorUseCase)));
             comandos.Add(RotasRabbit.SysUnidadeAdministrativa, new ComandoRabbit("SincronizaçãoUnidades", typeof(ITrataSysUnidadeAdministrativaUseCase)));
+            comandos.Add(RotasRabbit.EscEscola, new ComandoRabbit("SincronizacaoEScolas", typeof(ITrataEscolaUseCase)));
         }
 
         private MethodInfo ObterMetodo(Type objType, string method)
