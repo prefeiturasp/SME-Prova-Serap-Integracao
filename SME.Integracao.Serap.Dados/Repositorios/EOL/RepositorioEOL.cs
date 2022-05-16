@@ -1,11 +1,13 @@
 ﻿using SME.Integracao.Serap.Infra;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SME.Integracao.Serap.Dados.Repositorios.EOL
+namespace SME.Integracao.Serap.Dados
 {
     public class RepositorioEOL
     {
@@ -15,6 +17,19 @@ namespace SME.Integracao.Serap.Dados.Repositorios.EOL
         {
             this.connectionStringOptions = connectionStringOptions ?? throw new ArgumentNullException(nameof(connectionStringOptions));
         }
-        
+
+        protected IDbConnection ObterConexao()
+        {
+            var conexao = new SqlConnection(connectionStringOptions.Eol);
+            conexao.Open();
+            return conexao;
+        }
+
+        protected string ObterLinkedServerSME()
+        {
+            return connectionStringOptions.LinkedServerSME;
+        }
+
+
     }
 }

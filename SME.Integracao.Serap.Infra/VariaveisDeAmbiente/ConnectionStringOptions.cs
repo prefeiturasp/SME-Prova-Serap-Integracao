@@ -8,8 +8,10 @@
         public string Serap { get; set; }
 
         public string CoreSSO { get; set; }
+
         public string CoreSSOLeitura { get; set; }
 
+        public string LinkedServerSME { get; set; }
 
     }
 }

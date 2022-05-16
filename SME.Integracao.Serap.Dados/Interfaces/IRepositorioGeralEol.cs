@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SME.Integracao.Serap.Aplicacao
+namespace SME.Integracao.Serap.Dados
 {
-    class BuscaUnidadesAdministrativasEolQueyHandler
+    public interface IRepositorioGeralEol
     {
     }
 }

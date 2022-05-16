@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Queries\" />
+    <Folder Include="Queries\SysUnidadeAdministrativa\Serap\" />
     <Folder Include="UseCase\Deadletter\" />
   </ItemGroup>
 
