@@ -46,8 +46,8 @@ namespace SME.Integracao.Serap.Dados
 					            uac_dataAlteracao = GETDATE()
 					            where 
 					                ent_id = @EntId
-					                uad_id = @UadId
-					                uac_id = @UacId";
+					           and     uad_id = @UadId
+					           and     uac_id = @UacId";
 
                 var result = await conn.ExecuteAsync(query,
                     new
