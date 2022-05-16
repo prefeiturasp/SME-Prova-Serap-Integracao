@@ -10,7 +10,7 @@ namespace SME.Integracao.Serap.Dados.Mapeamentos
             ToTable("SYS_UnidadeAdministrativaContato");
             Map(c => c.EntId).ToColumn("ent_id");
             Map(c => c.UadId).ToColumn("uad_id");
-            Map(c => c.UacId).ToColumn("uac_id");
+            Map(c => c.UacId).ToColumn("uac_id").IsKey();
             Map(c => c.TmcId).ToColumn("tmc_id");
             Map(c => c.Contato).ToColumn("uac_contato");
             Map(c => c.Situacao).ToColumn("uac_situacao");

@@ -69,8 +69,8 @@ namespace SME.Integracao.Serap.Dados
 			try
 			{
 				string linkedServerSME = ObterLinkedServerSME();
-
-				var query = @"select ent_id EntId, uad_id UadId, isnull(uac_id, newid()) uac_id UacId, tmc_id TmcId, uac_contato UacContato
+				                                                      
+				var query = @"select ent_id EntId, uad_id UadId, isnull(uac_id, newid())  UacId, tmc_id TmcId, uac_contato UacContato
 								  from (select UAD.ent_id, UAD.uad_id, uac.uac_id, @tmc_fone as tmc_id, 
 											   dcu.dc_dispositivo as uac_contato,
 											   ROW_NUMBER() OVER (PARTITION BY UAD.ent_id, UAD.uad_id
@@ -116,7 +116,7 @@ namespace SME.Integracao.Serap.Dados
 			{
 				string linkedServerSME = ObterLinkedServerSME();
 
-				var query = @"select ent_id EntId, uad_id UadId, isnull(uac_id, newid()) uac_id UacId, tmc_id TmcId, uac_contato UacContato
+				var query = @"select ent_id EntId, uad_id UadId, isnull(uac_id, newid()) UacId, tmc_id TmcId, uac_contato UacContato
 								  from (select UAD.ent_id, UAD.uad_id, uac.uac_id, @tmc_fone as tmc_id, 
 											   dcu.dc_dispositivo as uac_contato,
 											   ROW_NUMBER() OVER (PARTITION BY UAD.ent_id, UAD.uad_id
@@ -162,7 +162,7 @@ namespace SME.Integracao.Serap.Dados
 			{
 				string linkedServerSME = ObterLinkedServerSME();
 
-				var query = @"select ent_id EntId, uad_id UadId, isnull(uac_id, newid()) uac_id UacId, tmc_id TmcId, uac_contato UacContato
+				var query = @"select ent_id EntId, uad_id UadId, isnull(uac_id, newid())  UacId, tmc_id TmcId, uac_contato UacContato
 								  from (select UAD.ent_id, UAD.uad_id, uac.uac_id, @tmc_fone as tmc_id, 
 											   dcu.dc_dispositivo as uac_contato,
 											   ROW_NUMBER() OVER (PARTITION BY UAD.ent_id, UAD.uad_id
@@ -208,7 +208,7 @@ namespace SME.Integracao.Serap.Dados
 			{
 				string linkedServerSME = ObterLinkedServerSME();
 
-				var query = @"select ent_id EntId, uad_id UadId, isnull(uac_id, newid()) uac_id UacId, tmc_id TmcId, uac_contato UacContato
+				var query = @"select ent_id EntId, uad_id UadId, isnull(uac_id, newid()) UacId, tmc_id TmcId, uac_contato UacContato
 								  from (select UAD.ent_id, UAD.uad_id, uac.uac_id, @tmc_fone as tmc_id, 
 											   dcu.dc_dispositivo as uac_contato,
 											   ROW_NUMBER() OVER (PARTITION BY UAD.ent_id, UAD.uad_id
