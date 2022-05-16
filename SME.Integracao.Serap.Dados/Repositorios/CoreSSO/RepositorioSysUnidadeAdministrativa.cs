@@ -1,14 +1,37 @@
 ﻿using Dapper;
+using SME.Integracao.Serap.Dominio;
 using SME.Integracao.Serap.Infra;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Dados
 {
-    public class RepositorioSysUnidadeAdministrativa : RepositorioCoreSSOBase , IRepositorioSysUnidadeAdministrativa
+    public class RepositorioSysUnidadeAdministrativa : RepositorioCoreSSOBase, IRepositorioSysUnidadeAdministrativa
     {
         public RepositorioSysUnidadeAdministrativa(ConnectionStringOptions connectionStringOptions) : base(connectionStringOptions)
         {
 
+        }
+
+        public async Task<object> InserirUnidadeAdministrativa(SysUnidadeAdministrativa novaUnidadeAdministrativa)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+
+                return await conn.InsertAsync(novaUnidadeAdministrativa);
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
         }
 
 
@@ -19,6 +42,7 @@ namespace SME.Integracao.Serap.Dados
             using var conn = ObterConexao();
             try
             {
+
                 var query = "TRUNCATE TABLE tmp_escola; ";
                 var result = await SqlMapper.QueryAsync<string>(conn, query, commandTimeout: 600);
             }
@@ -33,44 +57,7 @@ namespace SME.Integracao.Serap.Dados
             }
 
         }
-
-        public async Task CriaTabelasTemporarias()
-        {
-            var queryTabelasTemporarias = @"IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[end_esc]') AND type in (N'U'))
-                                          DROP TABLE [dbo].[end_esc]
-                                          GO
-                                          SET ANSI_NULLS ON
-                                          GO
-                                          SET QUOTED_IDENTIFIER ON
-                                          GO
-                                          SET ANSI_PADDING ON
-                                          GO
-                                          CREATE TABLE [dbo].[end_esc](
-                                          	[end_id] [uniqueidentifier] NULL,
-                                          	[nm_logradouro] [varchar](60) NULL
-                                          ) ON [PRIMARY]
-                                          GO
-                                          ";
-
-
-            using var conn = ObterConexao();
-            try
-            {
-
-
-                await SqlMapper.QueryAsync(conn, queryTabelasTemporarias);
-            }
-            catch (System.Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                conn.Close();
-                conn.Dispose();
-            }
-        }
-
+        
         public async Task CriaTipoUnidadeAdministrativas()
         {
             using var conn = ObterConexao();
@@ -111,82 +98,43 @@ namespace SME.Integracao.Serap.Dados
                 conn.Close();
                 conn.Dispose();
             }
-        }
+        }        
 
-        public async Task CarregaDadosEscolas()
+        public async Task<IEnumerable<SysUnidadeAdministrativa>> CarregaSysUnidadeAdministrativas()
         {
+            using var conn = ObterConexao();
             try
             {
-                using var conn = ObterConexao();
+              
 
-                var queryCarregaDadosView =
-              @"SELECT
-        		cast(cd_unidade_educacao as varchar(6)) as cd_unidade_educacao
-        		, cast(dc_tipo_unidade_educacao as varchar(25)) as dc_tipo_unidade_educacao
-        		, cast(sg_tp_escola as varchar(12)) as sg_tp_escola
-        		, cast(nm_unidade_educacao as varchar(60)) as nm_unidade_educacao
-        		, tp_logradouro 
-        		, cast(nm_logradouro as varchar(60)) as nm_logradouro
-        		, cast(cd_nr_endereco as varchar(6)) as cd_nr_endereco
-        		, cast(dc_complemento_endereco as varchar(30)) as dc_complemento_endereco
-        		, cast(nm_bairro as varchar(40)) as nm_bairro
-        		, cd_cep
-        		, cast(nm_distrito_mec as varchar(100)) as nm_distrito_mec
-        		, cast(nm_micro_regiao as varchar(40)) as nm_micro_regiao
-        		, cd_setor_distrito
-        		, cast(dc_sub_prefeitura as varchar(35)) as dc_sub_prefeitura
-        		, setor.uad_id AS uad_idSuperior
-        		, CASE sg_tipo_situacao_unidade
-        			WHEN 'ATIVA' THEN 1
-        		ELSE
-        			3
-        		END AS uad_situacao
-        		, (SELECT top 1 tua_id FROM SSO_SYS_TipoUnidadeAdministrativa WHERE LOWER(tua_nome) = 'escola') AS tua_id_escola
-        		, (SELECT top 1 ent_id FROM SSO_SYS_Entidade WHERE LOWER(ent_sigla) = 'smesp') AS ent_id
-        		, cast(cd_unidade_administrativa_referencia as varchar(6)) as cd_unidade_administrativa_referencia
-        	FROM
-        		[DB_EDUCACAO.REDE.SP].[se1426].[dbo].[v_unidade_educacao_dados_gerais] ueg WITH(READUNCOMMITTED)
-        		INNER JOIN
-        		(
-        			SELECT
-        				uad_id
-        				, uad_codigo
-        				, uad_nome
-        			FROM
-        				SSO_SYS_UnidadeAdministrativa WITH(READUNCOMMITTED)
-        			WHERE
-        				tua_id = (SELECT tua_id FROM SSO_SYS_TipoUnidadeAdministrativa WHERE LOWER(tua_nome) = 'setor')
-        		) AS setor
-        			--ON (setor.uad_nome = ueg.nm_micro_regiao)
-        			ON (setor.uad_codigo = ueg.cd_setor_distrito)
-        	WHERE
-        		dc_tipo_unidade_educacao = 'ESCOLA'
-        		--AND sg_tipo_situacao_unidade = 'ATIVA'
-        	GROUP BY
-        		cd_unidade_educacao 
-        		, dc_tipo_unidade_educacao
-        		, sg_tp_escola
-        		, nm_unidade_educacao
-        		, tp_logradouro 
-        		, nm_logradouro
-        		, cd_nr_endereco
-        		, dc_complemento_endereco
-        		, nm_bairro
-        		, cd_cep
-        		, nm_distrito_mec 
-        		, nm_micro_regiao 
-        		, cd_setor_distrito
-        		, dc_sub_prefeitura
-        		, setor.uad_id 
-        		,sg_tipo_situacao_unidade
-        		, cd_unidade_administrativa_referencia";
+                var query =
+            @"SELECT ent_id                as   EntidadeId                               
+                    ,tua_id				   as   TuaId
+	                  ,uad_id              as   Id     
+                    ,uad_codigo			   as   Codigo
+                    ,uad_nome			   as   Nome
+                    ,uad_sigla			   as   Sigla
+                    ,uad_idSuperior		   as   SuperiorId
+                    ,uad_situacao		   as   Situacao
+                    ,uad_dataCriacao	   as   DataCriacao
+                    ,uad_dataAlteracao	   as   DataAlteracao
+                    ,uad_integridade	   as   Integridade
+                    ,uad_codigoIntegracao  as   CodigoIntegracao
+                    ,uad_codigoInep		   as   CodigoInep
+               FROM SYS_UnidadeAdministrativa";
 
-                var result = await SqlMapper.QueryAsync<string>(conn, queryCarregaDadosView);
+                return await conn.QueryAsync<SysUnidadeAdministrativa>(query);
 
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
+            }
+
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
             }
 
         }
@@ -477,12 +425,50 @@ namespace SME.Integracao.Serap.Dados
                                            UPDATE SET uad_situacao = 3, uad_dataAlteracao = GETDATE(); ";
                     var result = await conn.ExecuteAsync(query);
                 }
-              
+
                 finally
                 {
                     conn.Close();
                     conn.Dispose();
                 }
+            }
+        }
+
+        public async Task AtualizarDistritoSetor(SysUnidadeAdministrativa distritoSetor)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"update SYS_UnidadeAdministrativa
+								set uad_nome = @Nome,
+									uad_dataAlteracao = GETDATE(),
+									uad_idSuperior = @SuperiorId,
+									uad_codigoIntegracao = @CodigoIntegracao
+								where ent_id = @EntidadeId
+								    and uad_codigo = @Codigo
+								    and uad_idSuperior = @SuperiorId
+								    and tua_id = @TuaId";
+
+                var result = await conn.ExecuteAsync(query,
+                    new
+                    {
+                        distritoSetor.EntidadeId,
+                        distritoSetor.Codigo,
+                        distritoSetor.SuperiorId,
+                        distritoSetor.TuaId,
+                        distritoSetor.Nome,
+                        distritoSetor.CodigoIntegracao
+                    },
+                    commandTimeout: 600);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
             }
         }
     }
