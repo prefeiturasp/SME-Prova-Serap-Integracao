@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SME.Integracao.Serap.Infra.Dtos
 {
-    public class EscolasDto
+    public class EscolaDto
     {
         public Guid EntId { get; set; }
         public Guid UadId { get; set; }

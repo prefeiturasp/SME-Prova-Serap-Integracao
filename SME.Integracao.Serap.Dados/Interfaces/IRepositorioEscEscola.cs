@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Dados
 {
-   public interface IRepositorioEscEscola
+    public interface IRepositorioEscEscola
     {
         Task<IEnumerable<EscEscola>> BuscaEscolas();
-
         Task<object> InserirEscola(EscEscola escola);
-    }
+
+        Task<object> AtualizarEscola(EscEscola escola);
+        Task<int> BuscaMaiorIdEscolas();
+     }
 }

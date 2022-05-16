@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Aplicacao.Queries
 {
-  public  class BuscaEscolasEolCoreQueryHandler : IRequestHandler<BuscaEscolasEolCoreQuery, IEnumerable<EscolasDto>>
+  public  class BuscaEscolasEolCoreQueryHandler : IRequestHandler<BuscaEscolasEolCoreQuery, IEnumerable<EscolaDto>>
     {
 
         private readonly IRepositorioUnidadeEducacao repositorioUnidadeEducacao;
@@ -19,7 +19,7 @@ namespace SME.Integracao.Serap.Aplicacao.Queries
                                           throw new ArgumentNullException(nameof(repositorioUnidadeEducacao));
         }
 
-        public async Task<IEnumerable<EscolasDto>> Handle(BuscaEscolasEolCoreQuery request,
+        public async Task<IEnumerable<EscolaDto>> Handle(BuscaEscolasEolCoreQuery request,
             CancellationToken cancellationToken)
             => await repositorioUnidadeEducacao.BuscaEscolas();
     }

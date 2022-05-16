@@ -10,6 +10,7 @@ namespace SME.Integracao.Serap.Dados
   public  interface IRepositorioUnidadeEducacao
     {
         Task<IEnumerable<UnidadeEducacaoDadosGeraisDto>> BuscaUnidadeEducacaoDadosGerais();
-        Task<IEnumerable<EscolasDto>> BuscaEscolas();
+        Task<IEnumerable<EscolaDto>> BuscaEscolas();
+        Task<UadIdSuperiorDto> ObterUadIdSuperior(Guid uadId);
     }
 }

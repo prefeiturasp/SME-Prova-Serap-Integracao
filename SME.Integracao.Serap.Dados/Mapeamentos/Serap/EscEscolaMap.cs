@@ -11,8 +11,9 @@ namespace SME.Integracao.Serap.Dados.Mapeamentos
         public EscEscolaMap()
         {
             ToTable("ESC_ESCOLA");
-            Map(c => c.EscolaId).ToColumn("esc_id");
-            Map(c => c.EntidadeId).ToColumn("ent_id");
+            Map(c => c.EscId).ToColumn("esc_id").IsKey().IsIdentity();
+
+            Map(c => c.EntId).ToColumn("ent_id");
             Map(c => c.UadId).ToColumn("uad_id");
             Map(c => c.EscCodigo).ToColumn("esc_codigo");
             Map(c => c.EscNome).ToColumn("esc_nome");
