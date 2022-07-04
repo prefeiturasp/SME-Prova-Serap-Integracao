@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.Integracao.Serap.Aplicacao.Interfaces;
+using SME.Integracao.Serap.Aplicacao.UseCase;
 using SME.Integracao.Serap.Dominio;
 using SME.Integracao.Serap.Infra;
 using System;
@@ -9,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Aplicacao
 {
-    public class TratarEnderecoUseCase : ITratarEnderecoUseCase
+    public class TratarEnderecoUseCase : AbstractUseCase, ITratarEnderecoUseCase
     {
-        private readonly IMediator mediator;
+
         private ParametrosCoreSsoDto parametrosCoreSso { get; set; }
         private IEnumerable<SysUnidadeAdministrativa> unidadesAdministrativasCoreSSO { get; set; }
         private IEnumerable<UnidadeEducacaoDadosGeraisDto> unidadesAdministrativasEOL { get; set; }
 
-        public TratarEnderecoUseCase(IMediator mediator)
+        public TratarEnderecoUseCase(IMediator mediator) : base(mediator)
         {
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+
         }
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)

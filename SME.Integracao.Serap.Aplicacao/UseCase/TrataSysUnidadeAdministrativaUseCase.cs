@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.Integracao.Serap.Aplicacao.Interfaces;
+using SME.Integracao.Serap.Aplicacao.UseCase;
 using SME.Integracao.Serap.Dominio;
 using System;
 using System.Linq;
@@ -7,13 +8,12 @@ using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Aplicacao
 {
-    public class TrataSysUnidadeAdministrativaUseCase : ITrataSysUnidadeAdministrativaUseCase
+    public class TrataSysUnidadeAdministrativaUseCase : AbstractUseCase, ITrataSysUnidadeAdministrativaUseCase
     {
-        private readonly IMediator mediator;
 
-        public TrataSysUnidadeAdministrativaUseCase(IMediator mediator)
+        public TrataSysUnidadeAdministrativaUseCase(IMediator mediator) : base(mediator)
         {
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+
         }
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
