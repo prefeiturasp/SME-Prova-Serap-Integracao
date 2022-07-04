@@ -42,7 +42,7 @@ namespace SME.Integracao.Serap.Aplicacao
             catch (Exception ex)
             {
                 var mensagem = $"ERRO WORKER INTEGRACAO [TRATAR DISTRITOS] - {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)}";
-                await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, $"Erros: {ex.Message}", rastreamento: ex?.StackTrace, excecaoInterna: ex.InnerException?.Message));
+                await RegistrarLogErro(mensagem, ex);
                 return false;
             }
         }
