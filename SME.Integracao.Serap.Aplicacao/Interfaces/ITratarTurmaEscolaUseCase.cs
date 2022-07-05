@@ -2,7 +2,7 @@
 
 namespace SME.Integracao.Serap.Aplicacao
 {
-    public interface ITratarTipoTurnoUseCase
+    public interface ITratarTurmaEscolaUseCase
     {
         Task<bool> Executar(MensagemRabbit mensagemRabbit);
     }

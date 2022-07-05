@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.Integracao.Serap.Aplicacao.UseCase;
 using SME.Integracao.Serap.Dominio;
+using SME.Integracao.Serap.Infra;
 using System;
 using System.Threading.Tasks;
 
@@ -21,6 +22,9 @@ namespace SME.Integracao.Serap.Aplicacao
 
                 foreach (TipoTurno tipoTurnoExcluir in listasParaTratar.Excluir)
                     await mediator.Send(new ExcluirTipoTurnoPorIdCommand(tipoTurnoExcluir.Id));
+
+                if (mensagemRabbit.Continue)
+                    await mediator.Send(new PublicaFilaRabbitCommand(RotasRabbit.TurmaEscolaSync));
 
                 return true;
             }

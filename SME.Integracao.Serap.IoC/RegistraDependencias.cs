@@ -24,6 +24,8 @@ namespace SME.Integracao.Serap.IoC
             services.AddScoped<IRepositorioDistritoEol, RepositorioDistritoEol>();
             services.AddScoped<IRepositorioSetorEol, RepositorioSetorEol>();
             services.AddScoped<IRepositorioTipoTurno, RepositorioTipoTurno>();
+            services.AddScoped<IRepositorioEscola, RepositorioEscola>();
+            services.AddScoped<IRepositorioTurma, RepositorioTurma>();
 
             services.AddScoped<ITestCommandUseCase, TestCommandUseCase>();
             services.AddScoped<ITrataSysUnidadeAdministrativaUseCase, TrataSysUnidadeAdministrativaUseCase>();
@@ -32,6 +34,8 @@ namespace SME.Integracao.Serap.IoC
             services.AddScoped<ITratarEnderecoUseCase, TratarEnderecoUseCase>();
             services.AddScoped<ITratarUnidadeAdministrativaContatoUseCase, TratarUnidadeAdministrativaContatoUseCase>();
             services.AddScoped<ITratarTipoTurnoUseCase, TratarTipoTurnoUseCase>();
+            services.AddScoped<ITurmaEscolaSyncUseCase, TurmaEscolaSyncUseCase>();
+            services.AddScoped<ITratarTurmaEscolaUseCase, TratarTurmaEscolaUseCase>();
 
             RegistrarMapeamentos.Registrar();
 

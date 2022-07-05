@@ -26,8 +26,8 @@ namespace SME.Integracao.Serap.Aplicacao
             var tipoTurnoEol = await repositorioGeralEol.ObterTipoTurnoEol();
             var tipoTurnoSerap = await repositorioTipoTurno.ObterTipoTurno();
 
-            var inserir = tipoTurnoEol.Where(eol => !tipoTurnoSerap.Any(s => s.Nome == eol.Nome));
-            var excluir = tipoTurnoSerap.Where(s => !tipoTurnoEol.Any(eol => eol.Nome == s.Nome));
+            var inserir = tipoTurnoEol.Where(eol => !tipoTurnoSerap.Any(s => s.Nome.Trim() == eol.Nome.Trim()));
+            var excluir = tipoTurnoSerap.Where(s => !tipoTurnoEol.Any(eol => eol.Nome.Trim() == s.Nome.Trim()));
 
             return (inserir, excluir);
         }
