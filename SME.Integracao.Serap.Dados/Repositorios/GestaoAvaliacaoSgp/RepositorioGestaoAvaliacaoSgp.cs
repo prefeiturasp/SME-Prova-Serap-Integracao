@@ -19,11 +19,6 @@ namespace SME.Integracao.Serap.Dados
             var conexao = new SqlConnection(connectionStringOptions.GestaoAvaliacaoSgp);
             conexao.Open();
             return conexao;
-        }
-
-        protected string ObterLinkedServerSME()
-        {
-            return connectionStringOptions.LinkedServerSME;
-        }
+        }        
     }
 }

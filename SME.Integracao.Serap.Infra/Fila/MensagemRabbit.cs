@@ -3,11 +3,11 @@ using System;
 
 public class MensagemRabbit
 {
-    public MensagemRabbit(object mensagem, Guid codigoCorrelacao, bool _continue = true)
+    public MensagemRabbit(object mensagem, Guid codigoCorrelacao, bool continuar = true)
     {
         Mensagem = mensagem;
         CodigoCorrelacao = codigoCorrelacao;
-        Continue = _continue;
+        Continuar = continuar;
     }
     protected MensagemRabbit()
     {
@@ -16,7 +16,7 @@ public class MensagemRabbit
 
     public object Mensagem { get; set; }
     public Guid CodigoCorrelacao { get; set; }
-    public bool Continue { get; set; }
+    public bool Continuar { get; set; }
 
     public T ObterObjetoMensagem<T>() where T : class
     {

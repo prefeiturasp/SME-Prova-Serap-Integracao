@@ -23,7 +23,7 @@ namespace SME.Integracao.Serap.Aplicacao
                 foreach (TipoTurno tipoTurnoExcluir in listasParaTratar.Excluir)
                     await mediator.Send(new ExcluirTipoTurnoPorIdCommand(tipoTurnoExcluir.Id));
 
-                if (mensagemRabbit.Continue)
+                if (mensagemRabbit.Continuar)
                     await mediator.Send(new PublicaFilaRabbitCommand(RotasRabbit.TurmaEscolaSync));
 
                 return true;

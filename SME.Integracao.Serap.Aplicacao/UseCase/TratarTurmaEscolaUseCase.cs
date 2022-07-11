@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SME.Integracao.Serap.Aplicacao.UseCase;
-using SME.Integracao.Serap.Dominio;
 using System;
 using System.Threading.Tasks;
 
@@ -18,6 +17,11 @@ namespace SME.Integracao.Serap.Aplicacao
             try
             {
                 var codigoEscola = mensagemRabbit.Mensagem.ToString();
+                var anoBase = DateTime.Now.Year;
+
+                await mediator.Send(new CarregarTempTurmasPorEscolaCommand(codigoEscola, anoBase));
+                await mediator.Send(new TratarTurmasPorEscolaCommand(codigoEscola, anoBase));
+
                 return true;
             }
             catch (Exception ex)
