@@ -152,7 +152,7 @@ namespace SME.Integracao.Serap.Dados
 			return @"
 						cd_turma_escola,dc_tipo_periodicidade,an_letivo,cd_escola,cd_serie_ensino,dc_serie_ensino,cd_modalidade_ensino,
 						cd_etapa_ensino,dc_etapa_ensino,cd_ciclo_ensino,dc_ciclo_ensino,dc_turma_escola,cd_ambiente_escola,cd_tipo_atendimento,
-						cd_tipo_turma,cd_tipo_programa,qt_vaga_oferecida,st_turma_escola,cd_tipo_turno,cd_duracao,ho_entrada,ho_saida,
+						cd_tipo_turma,cd_tipo_programa,qt_vaga_oferecida,st_turma_escola,cd_tipo_turno,dc_tipo_turno,cd_duracao,ho_entrada,ho_saida,
 						dt_inicio_turma,dt_fim_turma,dt_inicio,dt_fim
 				";
 		}
@@ -167,7 +167,7 @@ namespace SME.Integracao.Serap.Dados
 								ELSE te.dc_turma_escola
 							END ),15) AS dc_turma_escola,
 							cd_ambiente_escola,cd_tipo_atendimento,cd_tipo_turma,cd_tipo_programa,qt_vaga_oferecida,st_turma_escola,
-							cd_tipo_turno,cd_duracao,te.ho_entrada,te.ho_saida,te.dt_inicio_turma,te.dt_fim_turma,te.dt_inicio,te.dt_fim
+							tt.cd_tipo_turno,tt.dc_tipo_turno,cd_duracao,te.ho_entrada,te.ho_saida,te.dt_inicio_turma,te.dt_fim_turma,te.dt_inicio,te.dt_fim
 				";
 		}
 
@@ -190,7 +190,7 @@ namespace SME.Integracao.Serap.Dados
 								ELSE te.dc_turma_escola
 							END ),15) AS dc_turma_escola,
 							cd_ambiente_escola,cd_tipo_atendimento,cd_tipo_turma,cd_tipo_programa,qt_vaga_oferecida,st_turma_escola,
-							cd_tipo_turno,cd_duracao,te.ho_entrada,te.ho_saida,te.dt_inicio_turma,te.dt_fim_turma,te.dt_inicio,te.dt_fim
+							tt.cd_tipo_turno,tt.dc_tipo_turno,cd_duracao,te.ho_entrada,te.ho_saida,te.dt_inicio_turma,te.dt_fim_turma,te.dt_inicio,te.dt_fim
 				";
 		}
 
@@ -204,6 +204,7 @@ namespace SME.Integracao.Serap.Dados
 							inner join serie_ensino se on se.cd_serie_ensino = ste.cd_serie_ensino
 							inner join etapa_ensino ee on ee.cd_etapa_ensino = se.cd_etapa_ensino
 							inner join ciclo_ensino ce on ce.cd_ciclo_ensino = se.cd_ciclo_ensino
+							inner join tipo_turno tt on te.cd_tipo_turno = tt.cd_tipo_turno
 				";
 		}
 	}
