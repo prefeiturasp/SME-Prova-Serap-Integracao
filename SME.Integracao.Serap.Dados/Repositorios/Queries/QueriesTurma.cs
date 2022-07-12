@@ -63,10 +63,15 @@ namespace SME.Integracao.Serap.Dados
 				";
 		}
 
+		internal static string TempTurmasEol()
+		{
+			return "[@linkedServerSME].[GestaoAvaliacao_SGP].[dbo].[TEMP_TURMAS_EOL]";
+		}
+
 		internal static string CarregaTempTurmasEolFiltroCursosIntegracao()
 		{
 			return @$"
-						insert into [@linkedServerSME].[GestaoAvaliacao_SGP].[dbo].[TEMP_TURMAS_EOL]
+						insert into {TempTurmasEol()}
 							({ColunasTempTurmasEol()})
 						select
 							{ColunasTurmasEol()}
@@ -85,7 +90,7 @@ namespace SME.Integracao.Serap.Dados
 		internal static string CarregaTempTurmasEolFiltroTipoPrograma()
 		{
 			return @$"
-						insert into [@linkedServerSME].[GestaoAvaliacao_SGP].[dbo].[TEMP_TURMAS_EOL]
+						insert into {TempTurmasEol()}
 							({ColunasTempTurmasEol()})
 						select
 							{ColunasTurmasEol()}
@@ -101,7 +106,7 @@ namespace SME.Integracao.Serap.Dados
 		internal static string CarregaTempTurmasEolFiltroTipoEdFisica()
 		{
 			return @$"
-						insert into [@linkedServerSME].[GestaoAvaliacao_SGP].[dbo].[TEMP_TURMAS_EOL]
+						insert into {TempTurmasEol()}
 							({ColunasTempTurmasEol()})
 						select
 							{ColunasTurmasEol()}
@@ -116,7 +121,7 @@ namespace SME.Integracao.Serap.Dados
 		internal static string CarregaTempTurmasEolColunaEtapaEnsinoMedio()
 		{
 			return @$"
-						insert into [@linkedServerSME].[GestaoAvaliacao_SGP].[dbo].[TEMP_TURMAS_EOL]
+						insert into {TempTurmasEol()}
 							({ColunasTempTurmasEol()})
 						select
 							{ColunasTurmasEolEnsinoMedio()}
