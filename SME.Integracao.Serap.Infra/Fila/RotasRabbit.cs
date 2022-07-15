@@ -10,5 +10,6 @@
         public const string TipoTurno = "integracao.gestao.avaliacao.sgp.tipo.turno.sync";
         public const string TurmaEscolaSync = "integracao.gestao.avaliacao.sgp.turma.escola.sync";
         public const string TurmaEscolaTratar = "integracao.gestao.avaliacao.sgp.turma.escola.tratar";
+        public const string EscEscola = "integracao.GestaoAvaliacaoSgp.escEscola.sync";
     }
 }
