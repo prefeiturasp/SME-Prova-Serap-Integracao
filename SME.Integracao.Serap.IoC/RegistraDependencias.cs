@@ -15,6 +15,9 @@ namespace SME.Integracao.Serap.IoC
 
             services.AddScoped<IRepositorioSysUnidadeAdministrativa, RepositorioSysUnidadeAdministrativa>();
             services.AddScoped<IRepositorioUnidadeEducacao, RepositorioUnidadeEducacao>();
+            services.AddScoped<IRepositorioEscEscola, RepositorioEscEscola>();
+
+
             services.AddScoped<IRepositorioEndEndereco, RepositorioEndEndereco>();
             services.AddScoped<IRepositorioGeralCoreSso, RepositorioGeralCoreSso>();
             services.AddScoped<IRepositorioSysUnidadeAdministrativaEndereco, RepositorioSysUnidadeAdministrativaEndereco>();
@@ -23,6 +26,11 @@ namespace SME.Integracao.Serap.IoC
             services.AddScoped<IRepositorioGeralEol, RepositorioGeralEol>();
             services.AddScoped<IRepositorioDistritoEol, RepositorioDistritoEol>();
             services.AddScoped<IRepositorioSetorEol, RepositorioSetorEol>();
+            services.AddScoped<IRepositorioTipoTurno, RepositorioTipoTurno>();
+            services.AddScoped<IRepositorioEscola, RepositorioEscola>();
+            services.AddScoped<IRepositorioTurma, RepositorioTurma>();
+            services.AddScoped<IRepositorioTurmaEol, RepositorioTurmaEol>();
+            services.AddScoped<IRepositorioProcessoSyncTurmas, RepositorioProcessoSyncTurmas>();
 
             services.AddScoped<ITestCommandUseCase, TestCommandUseCase>();
             services.AddScoped<ITrataSysUnidadeAdministrativaUseCase, TrataSysUnidadeAdministrativaUseCase>();
@@ -30,6 +38,10 @@ namespace SME.Integracao.Serap.IoC
             services.AddScoped<ITratarSetorUseCase, TratarSetorUseCase>();
             services.AddScoped<ITratarEnderecoUseCase, TratarEnderecoUseCase>();
             services.AddScoped<ITratarUnidadeAdministrativaContatoUseCase, TratarUnidadeAdministrativaContatoUseCase>();
+            services.AddScoped<ITratarTipoTurnoUseCase, TratarTipoTurnoUseCase>();
+            services.AddScoped<ITurmaEscolaSyncUseCase, TurmaEscolaSyncUseCase>();
+            services.AddScoped<ITratarTurmaEscolaUseCase, TratarTurmaEscolaUseCase>();
+            services.AddScoped<ITrataEscolaUseCase, TrataEscolaUseCase>();
 
             RegistrarMapeamentos.Registrar();
 

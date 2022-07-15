@@ -13,6 +13,7 @@ namespace SME.Integracao.Serap.Dados.Mapeamentos
                 config.AddMap(new EndEnderecoMap());
                 config.AddMap(new SysUnidadeAdministrativaEnderecoMap());
                 config.AddMap(new SysUnidadeAdministrativaContatoMap());
+                config.AddMap(new EscEscolaMap());
 
                 config.ForDommel();
             });
