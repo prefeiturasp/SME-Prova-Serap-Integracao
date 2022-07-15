@@ -94,6 +94,9 @@ namespace SME.Integracao.Serap.Worker
             comandos.Add(RotasRabbit.Distrito, new ComandoRabbit("SincronizaçãoDistritos", typeof(ITratarDistritoUseCase)));
             comandos.Add(RotasRabbit.Setor, new ComandoRabbit("SincronizaçãoSetores", typeof(ITratarSetorUseCase)));
             comandos.Add(RotasRabbit.SysUnidadeAdministrativa, new ComandoRabbit("SincronizaçãoUnidades", typeof(ITrataSysUnidadeAdministrativaUseCase)));
+            comandos.Add(RotasRabbit.TipoTurno, new ComandoRabbit("SincronizaçãoTipoTurno", typeof(ITratarTipoTurnoUseCase)));
+            comandos.Add(RotasRabbit.TurmaEscolaSync, new ComandoRabbit("SincronizaçãoTurmaEscolaSync", typeof(ITurmaEscolaSyncUseCase)));
+            comandos.Add(RotasRabbit.TurmaEscolaTratar, new ComandoRabbit("SincronizaçãoTurmaEscolaTratar", typeof(ITratarTurmaEscolaUseCase)));
             comandos.Add(RotasRabbit.EscEscola, new ComandoRabbit("SincronizacaoEScolas", typeof(ITrataEscolaUseCase)));
         }
 

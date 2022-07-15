@@ -13,5 +13,7 @@
 
         public string LinkedServerSME { get; set; }
 
+        public string GestaoAvaliacaoSgp { get; set; }
+
     }
 }

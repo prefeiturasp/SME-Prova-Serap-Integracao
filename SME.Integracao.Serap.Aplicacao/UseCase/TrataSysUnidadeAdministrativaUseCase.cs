@@ -1,19 +1,20 @@
 ﻿using MediatR;
 using SME.Integracao.Serap.Aplicacao.Interfaces;
+using SME.Integracao.Serap.Aplicacao.UseCase;
 using SME.Integracao.Serap.Dominio;
+using SME.Integracao.Serap.Infra;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Aplicacao
 {
-    public class TrataSysUnidadeAdministrativaUseCase : ITrataSysUnidadeAdministrativaUseCase
+    public class TrataSysUnidadeAdministrativaUseCase : AbstractUseCase, ITrataSysUnidadeAdministrativaUseCase
     {
-        private readonly IMediator mediator;
 
-        public TrataSysUnidadeAdministrativaUseCase(IMediator mediator)
+        public TrataSysUnidadeAdministrativaUseCase(IMediator mediator) : base(mediator)
         {
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+
         }
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
@@ -52,12 +53,14 @@ namespace SME.Integracao.Serap.Aplicacao
                     await mediator.Send(new InserirUnidadeAdministrativaEmCascataCommand(uasNovasParaIncluirEntidade));
                 }
 
+                await mediator.Send(new PublicaFilaRabbitCommand(RotasRabbit.TipoTurno));
+
                 return true;
             }
             catch (Exception ex)
             {
                 var mensagem = $"ERRO WORKER INTEGRACAO [TRATAR UNIDADES ADMINISTRATIVAS] - {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)}";
-                await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, $"Erros: {ex.Message}", rastreamento: ex?.StackTrace, excecaoInterna: ex.InnerException?.Message));
+                await RegistrarLogErro(mensagem, ex);
                 return false;
             }
         }        

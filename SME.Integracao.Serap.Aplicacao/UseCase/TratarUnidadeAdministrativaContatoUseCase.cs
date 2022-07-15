@@ -1,22 +1,21 @@
 ﻿using MediatR;
 using SME.Integracao.Serap.Aplicacao.Interfaces;
+using SME.Integracao.Serap.Aplicacao.UseCase;
 using SME.Integracao.Serap.Dominio;
 using SME.Integracao.Serap.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Aplicacao
 {
-    public class TratarUnidadeAdministrativaContatoUseCase : ITratarUnidadeAdministrativaContatoUseCase
+    public class TratarUnidadeAdministrativaContatoUseCase : AbstractUseCase, ITratarUnidadeAdministrativaContatoUseCase
     {
-        private readonly IMediator mediator;
 
-        public TratarUnidadeAdministrativaContatoUseCase(IMediator mediator)
+        public TratarUnidadeAdministrativaContatoUseCase(IMediator mediator) : base(mediator)
         {
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+
         }
 
         public async Task<bool> Executar(MensagemRabbit mensagemRabbit)
@@ -30,7 +29,7 @@ namespace SME.Integracao.Serap.Aplicacao
             catch (Exception ex)
             {
                 var mensagem = $"ERRO WORKER INTEGRACAO [TRATAR CONTATOS] - {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)}";
-                await mediator.Send(new SalvarLogViaRabbitCommand(mensagem, $"Erros: {ex.Message}", rastreamento: ex?.StackTrace, excecaoInterna: ex.InnerException?.Message));
+                await RegistrarLogErro(mensagem, ex);
                 return false;
             }
         }
