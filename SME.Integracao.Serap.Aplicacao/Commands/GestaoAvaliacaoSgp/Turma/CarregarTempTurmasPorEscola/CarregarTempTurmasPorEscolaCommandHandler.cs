@@ -21,8 +21,9 @@ namespace SME.Integracao.Serap.Aplicacao
         public async Task<bool> Handle(CarregarTempTurmasPorEscolaCommand request, CancellationToken cancellationToken)
         {            
             await repositorioTurma.CriarTempTurmasEol();
+            await repositorioTurma.RemoverDadosTempTurmasEolPorEscola(request.CodigoEscola);
             await repositorioTurmaEol.CarregaTempTurmasEolIntegracao(request.CodigoEscola, request.AnoBase);
-            await repositorioTurma.UpdatesTempTurmasEol();
+            await repositorioTurma.UpdatesTempTurmasEol(request.CodigoEscola);
             return true;
         }
     }

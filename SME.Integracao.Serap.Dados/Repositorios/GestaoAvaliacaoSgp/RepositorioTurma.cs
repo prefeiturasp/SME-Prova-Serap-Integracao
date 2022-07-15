@@ -1,8 +1,7 @@
 ﻿using Dapper;
-using SME.Integracao.Serap.Dominio;
 using SME.Integracao.Serap.Infra;
 using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace SME.Integracao.Serap.Dados
@@ -36,19 +35,51 @@ namespace SME.Integracao.Serap.Dados
 			}
 		}
 
-		public async Task UpdatesTempTurmasEol()
+		public async Task UpdatesTempTurmasEol(string codigoEscola)
 		{
 
 			using var conn = ObterConexao();
+			var tran = conn.BeginTransaction();
 			try
 			{
 
 				var query = QueriesTurma.UpdatesTempTurmasEol();
-				await conn.ExecuteAsync(query.ToString(), commandTimeout: 6000);
-
+				await conn.ExecuteAsync(query.ToString(), new { codigoEscola }, transaction: tran, commandTimeout: 6000);
+				if (tran != null)
+					tran.Commit();
 			}
 			catch (Exception ex)
 			{
+				if (tran != null)
+					tran.Rollback();
+
+				throw ex;
+			}
+			finally
+			{
+				conn.Close();
+				conn.Dispose();
+			}
+		}
+
+		public async Task RemoverDadosTempTurmasEolPorEscola(string codigoEscola)
+		{
+
+			using var conn = ObterConexao();
+			var tran = conn.BeginTransaction();
+			try
+			{
+
+				var query = "delete from TEMP_TURMAS_EOL where cd_escola = @codigoEscola";
+				await conn.ExecuteAsync(query.ToString(), new { codigoEscola }, transaction: tran, commandTimeout: 6000);
+				if (tran != null)
+					tran.Commit();
+			}
+			catch (Exception ex)
+			{
+				if (tran != null)
+					tran.Rollback();
+
 				throw ex;
 			}
 			finally
@@ -62,15 +93,22 @@ namespace SME.Integracao.Serap.Dados
 		{
 
 			using var conn = ObterConexao();
+			var tran = conn.BeginTransaction();
 			try
 			{
 
-				var query = "EXEC [SP_TRATAR_TURMAS_ESCOLA] @codigo_escola = @codigoEscola, @ano = @anoBase";
-				await conn.ExecuteAsync(query.ToString(), new { codigoEscola, anoBase }, commandTimeout: 6000);
+				var proc = "[SP_TRATAR_TURMAS_ESCOLA]";
+				var parametros = new { codigo_escola = codigoEscola, ano = anoBase };
+				await conn.ExecuteAsync(proc, parametros, transaction: tran, commandType: CommandType.StoredProcedure, commandTimeout: 6000);
 
+				if (tran != null)
+					tran.Commit();
 			}
 			catch (Exception ex)
 			{
+				if (tran != null)
+					tran.Rollback();
+
 				throw ex;
 			}
 			finally

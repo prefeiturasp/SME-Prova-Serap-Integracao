@@ -32,7 +32,7 @@ namespace SME.Integracao.Serap.Aplicacao
             {
                 var mensagem = $"ERRO WORKER INTEGRACAO [TRATAR TIPO TURNO] - {mensagemRabbit.CodigoCorrelacao.ToString().Substring(0, 3)}";
                 await RegistrarLogErro(mensagem, ex);
-                return false;
+                throw ex;
             }
         }
     }

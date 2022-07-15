@@ -27,6 +27,7 @@ namespace SME.Integracao.Serap.IoC
             services.AddScoped<IRepositorioEscola, RepositorioEscola>();
             services.AddScoped<IRepositorioTurma, RepositorioTurma>();
             services.AddScoped<IRepositorioTurmaEol, RepositorioTurmaEol>();
+            services.AddScoped<IRepositorioProcessoSyncTurmas, RepositorioProcessoSyncTurmas>();
 
             services.AddScoped<ITestCommandUseCase, TestCommandUseCase>();
             services.AddScoped<ITrataSysUnidadeAdministrativaUseCase, TrataSysUnidadeAdministrativaUseCase>();

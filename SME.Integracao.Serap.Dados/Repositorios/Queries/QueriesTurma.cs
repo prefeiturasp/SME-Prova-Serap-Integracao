@@ -136,19 +136,21 @@ namespace SME.Integracao.Serap.Dados
 		internal static string UpdatesTempTurmasEol()
 		{
 			return @$"
-						UPDATE TEMP_TURMAS_EOL SET cd_etapa_ensino = 1 WHERE cd_etapa_ensino = 10
-						UPDATE TEMP_TURMAS_EOL SET cd_serie_ensino =  1, dc_serie_ensino = 'Bercario I' WHERE cd_serie_ensino = 3
-						UPDATE TEMP_TURMAS_EOL SET cd_serie_ensino =  4, dc_serie_ensino = 'Bercario II' WHERE cd_serie_ensino = 6
-						UPDATE TEMP_TURMAS_EOL SET cd_serie_ensino = 11, dc_serie_ensino = 'MINI GRUPO I' WHERE cd_serie_ensino = 11
-						UPDATE TEMP_TURMAS_EOL SET cd_serie_ensino = 28, dc_serie_ensino = 'MINI GRUPO II' WHERE cd_serie_ensino = 29
-						UPDATE TEMP_TURMAS_EOL SET cd_serie_ensino = 23, dc_serie_ensino = 'INFANTIL I' WHERE cd_serie_ensino = 24
-						UPDATE TEMP_TURMAS_EOL SET cd_serie_ensino = 25, dc_serie_ensino = 'INFANTIL II' WHERE cd_serie_ensino = 26		
+						UPDATE TEMP_TURMAS_EOL SET cd_etapa_ensino = 1 WHERE cd_etapa_ensino = 10 and cd_escola = @codigoEscola
+						UPDATE TEMP_TURMAS_EOL SET cd_serie_ensino =  1, dc_serie_ensino = 'Bercario I' WHERE cd_serie_ensino = 3 and cd_escola = @codigoEscola
+						UPDATE TEMP_TURMAS_EOL SET cd_serie_ensino =  4, dc_serie_ensino = 'Bercario II' WHERE cd_serie_ensino = 6 and cd_escola = @codigoEscola
+						UPDATE TEMP_TURMAS_EOL SET cd_serie_ensino = 11, dc_serie_ensino = 'MINI GRUPO I' WHERE cd_serie_ensino = 11 and cd_escola = @codigoEscola
+						UPDATE TEMP_TURMAS_EOL SET cd_serie_ensino = 28, dc_serie_ensino = 'MINI GRUPO II' WHERE cd_serie_ensino = 29 and cd_escola = @codigoEscola
+						UPDATE TEMP_TURMAS_EOL SET cd_serie_ensino = 23, dc_serie_ensino = 'INFANTIL I' WHERE cd_serie_ensino = 24 and cd_escola = @codigoEscola
+						UPDATE TEMP_TURMAS_EOL SET cd_serie_ensino = 25, dc_serie_ensino = 'INFANTIL II' WHERE cd_serie_ensino = 26 and cd_escola = @codigoEscola		
 						UPDATE TEMP_TURMAS_EOL 
 							SET tne_nome = dep.tne_nome, tme_nome = dep.tme_nome
-							FROM TEMP_TURMAS_EOL tur
-						INNER JOIN DEPARA_NIVEL_MODALIDADE_ENSINO dep ON dep.cd_etapa_ensino = tur.cd_etapa_ensino
+							FROM TEMP_TURMAS_EOL tur with (nolock)
+						INNER JOIN DEPARA_NIVEL_MODALIDADE_ENSINO dep with (nolock) ON dep.cd_etapa_ensino = tur.cd_etapa_ensino
+							where tur.cd_escola = @codigoEscola
 						UPDATE TEMP_TURMAS_EOL 
-							SET crp_ciclo = RTRIM(LTRIM(dc_ciclo_ensino));
+							SET crp_ciclo = RTRIM(LTRIM(dc_ciclo_ensino))
+							where cd_escola = @codigoEscola;
 				";
 		}
 
@@ -211,6 +213,6 @@ namespace SME.Integracao.Serap.Dados
 							inner join ciclo_ensino ce on ce.cd_ciclo_ensino = se.cd_ciclo_ensino
 							inner join tipo_turno tt on te.cd_tipo_turno = tt.cd_tipo_turno
 				";
-		}
+		}		
 	}
 }
