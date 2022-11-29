@@ -17,7 +17,7 @@ namespace SME.Integracao.Serap.Aplicacao
         }
         public async Task<bool> Handle(InserirAtualizarDadosPessoaCommand request, CancellationToken cancellationToken)
         {
-            return await repositorioPessoa.InserirAtualizarDadosPessoa();
+            return await repositorioPessoa.InserirAtualizarDadosPessoa(request.Paginacao.NumeroPagina, request.Paginacao.NumeroRegistros);
         }
     }
 }

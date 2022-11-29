@@ -11,6 +11,8 @@
         public const string TurmaEscolaSync = "integracao.gestao.avaliacao.sgp.turma.escola.sync";
         public const string TurmaEscolaTratar = "integracao.gestao.avaliacao.sgp.turma.escola.tratar";
         public const string EscEscola = "integracao.GestaoAvaliacaoSgp.escEscola.sync";
-        public const string Pessoa = "integracao.coresso.pessoa.sync";
+        public const string PessoaSync = "integracao.coresso.pessoa.sync";
+        public const string PessoaTratar = "integracao.coresso.pessoa.tratar";
+        public const string PessoaDocumentoTratar = "integracao.coresso.pessoa.documento.tratar";
     }
 }

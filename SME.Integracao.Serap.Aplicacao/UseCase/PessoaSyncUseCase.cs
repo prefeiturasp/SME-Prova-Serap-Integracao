@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.Integracao.Serap.Aplicacao.UseCase;
+using SME.Integracao.Serap.Infra;
 using System;
 using System.Threading.Tasks;
 
@@ -14,12 +15,18 @@ namespace SME.Integracao.Serap.Aplicacao
         {
             try
             {
-                var processoId = Guid.NewGuid();
-                await mediator.Send(new InserirProcessoCommand(processoId));
 
                 await mediator.Send(new CarregarTempDadosPessoaCommand());
-                await mediator.Send(new InserirAtualizarDadosPessoaCommand());
 
+                var totalRegistros = await mediator.Send(new ObterTotalPessoasTratarQuery());
+                var numeroRegistros = 1000;
+                var totalPaginas = (int)Math.Ceiling((double)totalRegistros / numeroRegistros);
+                for (int i = 1; i < totalPaginas + 1; i++)
+                {
+                    var msg = new PaginacaoDto(i, numeroRegistros);
+                    await mediator.Send(new PublicaFilaRabbitCommand(RotasRabbit.PessoaTratar, msg));
+                    await mediator.Send(new PublicaFilaRabbitCommand(RotasRabbit.PessoaDocumentoTratar, msg));
+                }
                 return true;
             }
             catch (Exception ex)
