@@ -55,8 +55,6 @@ namespace SME.Integracao.Serap.Aplicacao
         private List<SysUnidadeAdministrativaContato> ObterListaAtualizar(List<TempDispContatoDto> dadosTempDispContato, List<SysUnidadeAdministrativaContato> listaUac)
         {
             var lista = new List<SysUnidadeAdministrativaContato>();
-
-            //var contatosValidos = dadosTempDispContato.(x => x.UadId == )
             foreach (var uac in listaUac)
             {
                 var contato = dadosTempDispContato.FirstOrDefault(x => x.UadId == uac.UadId &&
@@ -80,35 +78,7 @@ namespace SME.Integracao.Serap.Aplicacao
                 }
             }
             return lista;
-        }
-
-        //var query = from disp in dadosTempDispContato
-        //            join uac in listaUac on
-        //            new
-        //            {
-        //                EntId = disp.EntId,
-        //                UadId = disp.UadId,
-        //                UacId = disp.UacId
-        //            }
-        //            equals
-        //            new
-        //            {
-        //                EntId = uac.EntId,
-        //                UadId = uac.UadId,
-        //                UacId = uac.UacId
-        //            }
-        //            where uac.Situacao == 3 || uac.Contato != disp.UacContato
-        //        /           select new { Uac = uac, Contato = disp.UacContato
-        //};
-
-        //        return (List<SysUnidadeAdministrativaContato>) query.Select(uac => new SysUnidadeAdministrativaContato
-        //        {
-        //            EntId = uac.Uac.EntId,
-        //            UadId = uac.Uac.UadId,
-        //            UacId = uac.Uac.UacId,
-        //            TmcId = uac.Uac.TmcId,
-        //            Contato = uac.Contato,
-        //        });
+        }        
 
         private List<SysUnidadeAdministrativaContato> ObterListaInserir(List<TempDispContatoDto> dadosTempDispContato, List<SysUnidadeAdministrativaContato> listaUac)
         {
