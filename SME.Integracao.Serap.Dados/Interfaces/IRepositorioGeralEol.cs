@@ -7,5 +7,6 @@ namespace SME.Integracao.Serap.Dados
     public interface IRepositorioGeralEol
     {
         Task<IEnumerable<TipoTurno>> ObterTipoTurnoEol();
+        Task<bool> CarregarTempDadosPessoaCoreSSO();
     }
 }

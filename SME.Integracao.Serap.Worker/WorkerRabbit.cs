@@ -98,6 +98,9 @@ namespace SME.Integracao.Serap.Worker
             comandos.Add(RotasRabbit.TurmaEscolaSync, new ComandoRabbit("SincronizaçãoTurmaEscolaSync", typeof(ITurmaEscolaSyncUseCase)));
             comandos.Add(RotasRabbit.TurmaEscolaTratar, new ComandoRabbit("SincronizaçãoTurmaEscolaTratar", typeof(ITratarTurmaEscolaUseCase)));
             comandos.Add(RotasRabbit.EscEscola, new ComandoRabbit("SincronizacaoEScolas", typeof(ITrataEscolaUseCase)));
+            comandos.Add(RotasRabbit.PessoaSync, new ComandoRabbit("SincronizacaoPessoas", typeof(IPessoaSyncUseCase)));
+            comandos.Add(RotasRabbit.PessoaTratar, new ComandoRabbit("TratarPessoas", typeof(IPessoaTratarUseCase)));
+            comandos.Add(RotasRabbit.PessoaDocumentoTratar, new ComandoRabbit("TratarPessoaDocumento", typeof(IPessoaDocumentoTratarUseCase)));
         }
 
         private MethodInfo ObterMetodo(Type objType, string method)
